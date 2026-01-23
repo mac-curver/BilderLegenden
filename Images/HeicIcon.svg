@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="70"
+   height="70"
+   viewBox="0 0 18.520833 18.520833"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25)"
+   sodipodi:docname="HeicIcon.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.5010244"
+     inkscape:cx="65.288746"
+     inkscape:cy="197.19866"
+     inkscape:window-width="1552"
+     inkscape:window-height="867"
+     inkscape:window-x="268"
+     inkscape:window-y="116"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <rect
+       x="228.3091"
+       y="261.60416"
+       width="223.55264"
+       height="137.93674"
+       id="rect2" />
+  </defs>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g2"
+       transform="matrix(0.22140787,0,0,0.21897776,-5.5547921,-8.7463499)"
+       style="stroke-width:4.54154">
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:9.0831;stroke-linejoin:bevel;stroke-opacity:1"
+         id="rect1"
+         width="72.516945"
+         height="72.516945"
+         x="31.461863"
+         y="46.563557" />
+      <text
+         xml:space="preserve"
+         transform="matrix(0.26458333,0,0,0.26458333,-25.169492,-2.5169492)"
+         id="text2"
+         style="font-size:96px;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:center;white-space:pre;shape-inside:url(#rect2);fill:#000000;fill-opacity:1;stroke:none;stroke-width:34.3298;stroke-linejoin:bevel;stroke-opacity:1"><tspan
+           x="244.06152"
+           y="348.07594"
+           id="tspan1">Heic</tspan></text>
+    </g>
+  </g>
+</svg>

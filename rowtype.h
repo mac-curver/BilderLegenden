@@ -60,12 +60,16 @@ public:
 
     const QVariant columnData(int column) const;
     const QVariant columnDecoration(int column) const;
+    const QVariant columnColor(int column) const;
 
     bool containsBitmap() const;
 
     void setColumnData(int column, const QVariant &text);
 
     QPixmap createPixmap() const;
+
+    void enterEditMode(int column);
+    void exitEditMode(int column);
 
 
 public:
@@ -77,6 +81,9 @@ public:
     QString url;
 
     QPixmap pixMap = QPixmap();
+
+private:
+    bool underEdit[N_ColumnTypes] = {false, false, false, false, false, false};
 
 
 };

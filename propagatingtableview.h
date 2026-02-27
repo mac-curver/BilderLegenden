@@ -19,6 +19,7 @@ public:
 
     void updatePreview();
     void showPrintPreview(bool showIt);
+    void setLabelFont(const QString &font);
     void setLabelSize_mm(const QSizeF &size_mm);
     void setFrameThickness(double thickness_mm);
 
@@ -36,6 +37,7 @@ protected:
     void dragLeaveEvent(QDragLeaveEvent *event) override;
 
     void dropEvent(QDropEvent *event) override;
+    void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) override;
 
 
 
@@ -49,6 +51,7 @@ private:
     MultiLineDelegate *multiLineDelegate = NULL;
     CenteredDelegate *centerDelegate = NULL;
     CustomPrintPreview *printPreviewDialog = NULL;
+public:
     QrCodeWidget *codeWidget = NULL;
 
 

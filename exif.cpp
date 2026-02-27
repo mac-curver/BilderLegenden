@@ -735,7 +735,13 @@ int easyexif::EXIFInfo::parseFromEXIFSegment(
         if (offs + 6 + 12 * num_sub_entries > len) return PARSE_EXIF_ERROR_CORRUPT;
         offs += 2;
         Geolocation_t geo;
+        geo.LatComponents.degrees = 0;
+        geo.LatComponents.minutes = 0;
+        geo.LatComponents.seconds = 0;
         geo.LatComponents.direction = '?';
+        geo.LonComponents.degrees = 0;
+        geo.LonComponents.minutes = 0;
+        geo.LonComponents.seconds = 0;
         geo.LonComponents.direction = '?';
         char altitudeRef = '0';
         while (--num_sub_entries >= 0) {

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>518</width>
-    <height>245</height>
+    <height>314</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -31,17 +31,27 @@
      <property name="topMargin">
       <number>10</number>
      </property>
-     <item row="2" column="1">
-      <widget class="QCheckBox" name="doubleClickedCheckBox">
-       <property name="text">
-        <string>Double Clicked</string>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="1">
       <widget class="QCheckBox" name="selectedClickedCheckBox">
        <property name="text">
         <string>Selected Clicked</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QCheckBox" name="noEditCheckBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string extracomment="0">No Edit Triggers</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QCheckBox" name="editKeyCheckBox">
+       <property name="text">
+        <string>Edit Key Pressed</string>
        </property>
       </widget>
      </item>
@@ -52,19 +62,6 @@
        </property>
        <property name="checked">
         <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="defaultLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Default URL</string>
        </property>
       </widget>
      </item>
@@ -93,17 +90,23 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="1">
-      <widget class="QCheckBox" name="anyKeyCheckBox">
+     <item row="7" column="0">
+      <widget class="QLabel" name="defaultLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
-        <string>Any Key Pressed</string>
+        <string>Default URL</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
-      <widget class="QCheckBox" name="editKeyCheckBox">
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="doubleClickedCheckBox">
        <property name="text">
-        <string>Edit Key Pressed</string>
+        <string>Double Clicked</string>
        </property>
       </widget>
      </item>
@@ -114,13 +117,20 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QCheckBox" name="noEditCheckBox">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
+     <item row="5" column="1">
+      <widget class="QCheckBox" name="anyKeyCheckBox">
        <property name="text">
-        <string extracomment="0">No Edit Triggers</string>
+        <string>Any Key Pressed</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QCheckBox" name="preserveCharacterSpacingCheckBox">
+       <property name="text">
+        <string>Preserve Character Spacing (Correct kerning)</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

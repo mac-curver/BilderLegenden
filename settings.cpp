@@ -2,10 +2,49 @@
 
 Settings *Settings::shared = NULL;
 
+QSettings *Settings::settings() {
+    return shared->settingsPtr;
+}
+
+void Settings::setDefaultUrl(const QString &url) {
+    _defaultUrl = url;
+    store();
+}
+
+QString Settings::defaultUrl() {
+    return _defaultUrl;
+}
+
+void Settings::setPreseveCharacterSpacing(bool preserve) {
+    _preserveCharacterSpacing = preserve;
+    store();
+}
+
+bool Settings::preserveCharacterSpacing() {
+    return _preserveCharacterSpacing;
+}
+
+QString Settings::svgFileName() {
+    Q_ASSERT(false);
+    return "";
+}
+
+QString Settings::pdfFileName() {
+    Q_ASSERT(false);
+    return "";
+}
+
 
 Settings::Settings() {
-
+    settingsPtr = new QSettings(APP_COMPANY, APP_NAME);
+    qDebug() << settingsPtr->applicationName() << settingsPtr->organizationName() << settingsPtr->isWritable() << settingsPtr->fileName();
 }
+
+Settings::~Settings() {
+    store();
+    delete settingsPtr;
+}
+
 
 Settings *Settings::createSettings() {
     if (NULL == shared) {
@@ -16,21 +55,21 @@ Settings *Settings::createSettings() {
 }
 
 void Settings::retrieve() {
-    QSettings settings;
 
-    settings.beginGroup("Settings");
+    settingsPtr->beginGroup("Settings");
 
-    _defaultUrl = settings.value("DefaultUrl", _defaultUrl).toString();
+    _defaultUrl = settingsPtr->value("DefaultUrl", _defaultUrl).toString();
+    _preserveCharacterSpacing = settingsPtr->value("PreserveCharacterSpacing", true).toBool();
 
-    settings.endGroup();
+    settingsPtr->endGroup();
 }
 
 void Settings::store() {
-    QSettings settings;
 
-    settings.beginGroup("Settings");
+    settingsPtr->beginGroup("Settings");
 
-    settings.setValue("DefaultUrl", _defaultUrl);
+    settingsPtr->setValue("PreserveCharacterSpacing", _preserveCharacterSpacing);
+    settingsPtr->setValue("DefaultUrl", _defaultUrl);
 
-    settings.endGroup();
+    settingsPtr->endGroup();
 }

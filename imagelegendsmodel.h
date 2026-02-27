@@ -26,7 +26,6 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value,
                  int role = Qt::EditRole) override;
 
-    QVariant columnData(int row, int column);
 
     bool insertRows(int position, int rows, const QModelIndex &index = QModelIndex()) override;
     bool removeRows(int position, int rows, const QModelIndex &index = QModelIndex()) override;
@@ -52,7 +51,7 @@ private:
     RowType composeRow(const QByteArray &ba, const QString &urlString, int index) const;
 
 
-private:
+public:
     QList<RowType> dataRows;
 
     

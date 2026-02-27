@@ -3,21 +3,20 @@ QT       += core gui widgets svg svgwidgets xml printsupport
 
 CONFIG += c++17
 
-VERSION   = 2.01.00
+VERSION   = 2.01.01
 
-#    win32 {
-#        COMMON_PATH=$$PWD/../../_Common
-#    } mac {
-#        COMMON_PATH=$$PWD/../../GitQtLocal/Mac_Common
-#    }
+MOC_DIR = ../build/moc
+OBJECTS_DIR = ../build/objects
 
 
 mac {
+#   COMMON_PATH=$$PWD/../../GitQtLocal/Mac_Common
     DEFINES += USE_TOUCH
     ICON = Images/BilderLegendenIcon.icns # must be added to project (created with GC)
 }
 
-win {
+win32 { #even for 64 bit!
+#   COMMON_PATH=$$PWD/../../_Common
     RC_ICON = Images/BilderLegenden.ICO
 }
 

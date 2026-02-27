@@ -78,7 +78,13 @@ void PropagatingTableView::showPrintPreview(bool showIt) {
             return;
         }
     }
+}
 
+void PropagatingTableView::setLabelFont(const QString &font) {
+    if (codeWidget) {
+        codeWidget->setLabelFont(font);
+    }
+    updatePreview();
 }
 
 void PropagatingTableView::setLabelSize_mm(const QSizeF &size_mm) {
@@ -122,7 +128,7 @@ QRectF PropagatingTableView::getPageRect() {
 
 
 void PropagatingTableView::keyReleaseEvent(QKeyEvent *event) {
-    qDebug() << "PropagatingTableView::keyReleaseEvent";
+    //qDebug() << "PropagatingTableView::keyReleaseEvent";
     updatePreview();
     QTableView::keyReleaseEvent(event);
 }
@@ -149,6 +155,20 @@ void PropagatingTableView::dropEvent(QDropEvent *event) {
     static_cast<ImageLegendsModel*>(model())->appendUrls(mimeData->urls());
     event->acceptProposedAction();
     update();
+}
+
+void PropagatingTableView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
+    QModelIndex index;
+    foreach (index, selected.indexes()) {
+        QModelIndex index = selected.indexes().constFirst();
+        legendsModel.dataRows[index.row()].enterEditMode(index.column());
+    }
+    foreach (index, deselected.indexes()) {
+        QModelIndex index = selected.indexes().constFirst();
+        legendsModel.dataRows[index.row()].exitEditMode(index.column());
+    }
+
+    //model()->dataChanged(index, index, QList<int>() << Qt::ForegroundRole);
 }
 
 

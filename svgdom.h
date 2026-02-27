@@ -24,8 +24,8 @@ public:
     QDomElement makeQrCode(const QrCode &qr);
 
 
-    void addRect();
-    void addText(const QString &text, double size_px, double yPosition);
+    //void addRect();
+    //void addText(const QString &text, double size_px, double yPosition);
 
     void setViewBox(double width, double height);
 
@@ -36,6 +36,10 @@ public:
 
 
     QSizeF plotSize(const QSizeF &pageSize_mm) const;
+private:
+    QDomElement makeCenteredTextAsText(const QString &text, int size_px, int yPosition);
+    QDomElement makeCenteredTextAsPath(const QString &text, int size_px, int yPosition);
+
 
 public:
     int number_width(const QSizeF &pageSize_mm) const;
@@ -46,6 +50,7 @@ public:
     double labelWidth_mm =  100.0;
     double labelHeight_mm =  50.0;
     double lineThickness_mm = 1.0;
+    QString labelFont = "Arial";
 
 private:
     double border = 7.0;

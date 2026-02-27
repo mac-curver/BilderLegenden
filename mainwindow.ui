@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>929</width>
+    <width>961</width>
     <height>600</height>
    </rect>
   </property>
@@ -157,6 +157,16 @@
        </widget>
       </item>
       <item>
+       <widget class="QFontComboBox" name="fontComboBox">
+        <property name="editable">
+         <bool>false</bool>
+        </property>
+        <property name="currentIndex">
+         <number>6</number>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Orientation::Horizontal</enum>
@@ -168,19 +178,6 @@
          </size>
         </property>
        </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="previewPushButton">
-        <property name="text">
-         <string>Print Preview</string>
-        </property>
-        <property name="checkable">
-         <bool>false</bool>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
-        </property>
-       </widget>
       </item>
      </layout>
     </item>
@@ -299,6 +296,32 @@
         </property>
        </spacer>
       </item>
+      <item>
+       <widget class="QPushButton" name="exportSvgPushButton">
+        <property name="text">
+         <string>Export SVG...</string>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="previewPushButton">
+        <property name="text">
+         <string>Print Preview</string>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
@@ -308,8 +331,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>929</width>
-     <height>33</height>
+     <width>961</width>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuBildLegenden">
@@ -319,7 +342,20 @@
     <addaction name="actionAbout"/>
     <addaction name="actionPreferences"/>
    </widget>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <widget class="QMenu" name="menuRecent_Projects">
+     <property name="title">
+      <string>Recent Projects</string>
+     </property>
+     <addaction name="actionLast_Project"/>
+    </widget>
+    <addaction name="menuRecent_Projects"/>
+   </widget>
    <addaction name="menuBildLegenden"/>
+   <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionAbout">
@@ -343,6 +379,11 @@
   <action name="actionTest2">
    <property name="text">
     <string>Test2</string>
+   </property>
+  </action>
+  <action name="actionLast_Project">
+   <property name="text">
+    <string>Last Project</string>
    </property>
   </action>
  </widget>
@@ -531,6 +572,54 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>fontComboBox</sender>
+   <signal>currentTextChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setLabelFont(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>710</x>
+     <y>49</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>466</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>exportSvgPushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>exportSvg()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>653</x>
+     <y>556</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>480</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>menuRecent_Projects</sender>
+   <signal>triggered(QAction*)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>recentTriggered(QAction*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>59</x>
+     <y>30</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>480</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>load()</slot>
@@ -545,5 +634,9 @@
   <slot>setLabelSize(double)</slot>
   <slot>setFrameThickness(double)</slot>
   <slot>addPhoto()</slot>
+  <slot>setLabelFont(QString)</slot>
+  <slot>printPdf()</slot>
+  <slot>exportSvg()</slot>
+  <slot>recentTriggered(QAction*)</slot>
  </slots>
 </ui>

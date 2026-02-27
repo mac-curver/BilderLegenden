@@ -39,6 +39,7 @@ public:
 
     void print(QPrinter *printerPtr);
     QSizeF labelSize_mm() const;
+    void setLabelFont(const QString &font);
     void setLabelSize_mm(const QSizeF &size_mm);
     void setFrameThickness(double thickness);
 
@@ -48,6 +49,8 @@ public:
     void zoomIn(double factor);
     void resetZoom();
     int pageCount() const;
+    QByteArray svg(int pageNumberPlusOne);
+
 
 public slots:
     void printPreview(QPrinter *printerPtr);
@@ -58,6 +61,7 @@ public slots:
 protected:
     QSize sizeHint() const override;
     virtual void paintEvent(QPaintEvent *event) override;
+    void resizeContent();
 
 
 
@@ -74,7 +78,6 @@ public:
     QPrinter *printer = NULL;
 
 
-    void resizeContent();
 };
 
 #endif // QRCODEWIDGET_H

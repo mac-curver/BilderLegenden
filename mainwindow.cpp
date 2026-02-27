@@ -1,4 +1,5 @@
 #include <QPrinter>
+#include <QPainter>
 #include <QPrintDialog>
 #include <QPrintPreviewWidget>
 #include <QMessageBox>
@@ -7,6 +8,9 @@
 #include <QMimeData>
 #include <QSettings>
 #include <QAbstractItemView>
+#include <QFontComboBox>
+#include <QSaveFile>
+#include <QInputDialog>
 
 //#include "logfile.h"
 #include "settings.h"
@@ -30,26 +34,27 @@ MainWindow::~MainWindow() {
 
 bool MainWindow::awake() {
 
-    QSettings settings;
-
+    Settings::settings()->beginGroup("labelSettings");
+    QString test = Settings::settings()->value("font", "emptyfont").toString();
+    Settings::settings()->endGroup();
 
     if (qApp->queryKeyboardModifiers() & Qt::ShiftModifier) {
         qDebug() << "Shiftkey was down";
     }
     else {
-        settings.beginGroup("mainwindow");
+        Settings::settings()->beginGroup("mainwindow");
         if (!isFullScreen()) {
-            settings.setValue("size", size());
+            Settings::settings()->setValue("size", size());
         }
-        QSize newSize = settings.value("size", QSize(600, 400)).toSize();
-        QPoint newPos = settings.value("position", QSize(100, 50)).toPoint();
+        QSize newSize = Settings::settings()->value("size", QSize(600, 400)).toSize();
+        QPoint newPos = Settings::settings()->value("position", QSize(100, 50)).toPoint();
         resize(newSize);
         move(newPos);
-        bool shouldBeFullScreen = settings.value("fullScreen", false).toBool();
-        settings.endGroup();
+        bool shouldBeFullScreen = Settings::settings()->value("fullScreen", false).toBool();
+        Settings::settings()->endGroup();
 
         if (shouldBeFullScreen) {
-            settings.setValue("size", size());
+            Settings::settings()->setValue("size", size());
             showFullScreen();
         }
         else {
@@ -64,11 +69,17 @@ bool MainWindow::awake() {
     settingsDialog->retrieveEditTriggers();
 
 
-    settings.beginGroup("labelSettings");
-    ui->widthDoubleSpinBox->setValue(settings.value("width", ui->widthDoubleSpinBox->value()).toDouble());
-    ui->heightDoubleSpinBox->setValue(settings.value("height", ui->heightDoubleSpinBox->value()).toDouble());
-    ui->frameDoubleSpinBox->setValue(settings.value("frameThickness", ui->frameDoubleSpinBox->value()).toDouble());
-    settings.endGroup();
+    Settings::settings()->beginGroup("labelSettings");
+
+    ui->fontComboBox->setFontFilters(QFontComboBox::ScalableFonts);
+    QString settingsFontAsString = Settings::settings()->value("font", ui->fontComboBox->currentFont()).toString();
+    ui->fontComboBox->setCurrentFont(QFont(settingsFontAsString));
+    ui->tableView->setLabelFont(settingsFontAsString);
+
+    ui->widthDoubleSpinBox->setValue(Settings::settings()->value("width", ui->widthDoubleSpinBox->value()).toDouble());
+    ui->heightDoubleSpinBox->setValue(Settings::settings()->value("height", ui->heightDoubleSpinBox->value()).toDouble());
+    ui->frameDoubleSpinBox->setValue(Settings::settings()->value("frameThickness", ui->frameDoubleSpinBox->value()).toDouble());
+    Settings::settings()->endGroup();
 
     // Does not Work!? but for file menu it works ?!
     //connect(ui->actionPreferences->menu(), &QMenu::aboutToShow, this, &MainWindow::onAboutToShowMainMenu);
@@ -80,6 +91,24 @@ bool MainWindow::awake() {
     //svgDisplay->setImageLegends(&legendsModel);
     //svgDisplay->setVisible(ui->showPushButton->isChecked());
     //ui->tableView->setSvgDisplay(svgDisplay);
+
+    recentPaths = Settings::settings()->value("RecentFiles").toStringList();
+    /*
+    QStringList reversed = Settings::settings()->value("RecentFiles").toStringList();
+
+    for (auto item = reversed.cbegin(), end = reversed.cend(); item != end; ++item) {
+       recentPaths.prepend(*item);
+    }
+    Settings::settings()->setValue("RecentFiles", recentPaths);
+    */
+
+    updateRecentMenu();
+
+
+    if (!recentPaths.empty()) {
+        QString legendsFileName = recentPaths.last();
+        loadWithName(legendsFileName);
+    }
 
     connect(ui->tableView, &PropagatingTableView::requestUpdate, this, &MainWindow::updateTableView);
 
@@ -123,8 +152,29 @@ void MainWindow::dropEvent(QDropEvent *event) {
 }
 */
 
+bool MainWindow::appendToRecent(QString fileName) {
+    bool exists = recentPaths.removeOne(fileName);
+
+    recentPaths << fileName;
+    for (;recentPaths.length() > 10; ) {
+        recentPaths.takeFirst();
+    }
+    updateRecentMenu();
+    return exists;
+}
+
+void MainWindow::updateRecentMenu() {
+    ui->menuRecent_Projects->clear();
+    for (auto item = recentPaths.cbegin(), end = recentPaths.cend(); item != end; ++item) {
+        QAction *action = new QAction(*item);
+        ui->menuRecent_Projects->insertAction(NULL, action);
+    }
+}
+
+
+
 void MainWindow::save() {
-    qDebug() << "MainWindow::awake()";
+    qDebug() << "MainWindow::save()";
     QString fileName=QStandardPaths::writableLocation(QStandardPaths::HomeLocation)+"/legends.xml";
     QFileDialog fileDialog(this);
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
@@ -136,6 +186,10 @@ void MainWindow::save() {
     case QDialog::Accepted:
         fileName = fileDialog.selectedFiles().at(0);
         static_cast<ImageLegendsModel*>(ui->tableView->model())->saveFile(fileName);
+
+        appendToRecent(fileName);
+        Settings::settings()->setValue("RecentFiles", recentPaths);
+
         break;
     default:
         break;
@@ -155,12 +209,18 @@ void MainWindow::load() {
     switch (fileDialog.exec()) {
     case QDialog::Accepted:
         fileName = fileDialog.selectedFiles().at(0);
-        static_cast<ImageLegendsModel*>(ui->tableView->model())->loadFile(fileName);
+        loadWithName(fileName);
         break;
     default:
         break;
     }
 }
+
+void MainWindow::loadWithName(const QString &legends) {
+    static_cast<ImageLegendsModel*>(ui->tableView->model())->loadFile(legends);
+    appendToRecent(legends);
+}
+
 
 
 void MainWindow::setStatus() {
@@ -203,6 +263,7 @@ void MainWindow::openPhoto(const QString &fileName) {
     ui->tableView->updatePreview();
 }
 
+
 void MainWindow::addPhoto() {
     qDebug() << "MainWindow::addPhoto()";
     QString fileName = QStandardPaths::standardLocations(QStandardPaths::PicturesLocation).constFirst()+"/";
@@ -232,6 +293,68 @@ void MainWindow::printPreview() {
     ui->tableView->showPrintPreview(true);
 }
 
+void MainWindow::printPdf() {
+    QPrinter printer(QPrinter::PrinterResolution);
+    printer.setOutputFormat(QPrinter::PdfFormat);
+
+    QString fileName = QStandardPaths::writableLocation(QStandardPaths::HomeLocation)+"/Legends.pdf";
+    QFileDialog fileDialog(this);
+    fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+    if (!fileName.isEmpty()) {
+        fileDialog.setDirectory(QFileInfo(fileName).absolutePath());
+    }
+    fileDialog.selectFile(fileName);
+    QPainter painter(&printer);
+    bool success;
+    switch (fileDialog.exec()) {
+    case QDialog::Accepted:
+        fileName = fileDialog.selectedFiles().at(0);
+        printer.setOutputFileName(fileName);
+        success = printer.setPageMargins(QMarginsF(12, 16, 12, 20), QPageLayout::Millimeter);
+        ui->tableView->codeWidget->render(&painter);
+        qDebug() << success;
+        break;
+    default:
+        break;
+    }
+
+}
+
+void MainWindow::saveSvgFile(const QString &fileName, int pageNumberPlusOne) {
+    QSaveFile file(fileName);
+    if (file.open(QIODevice::WriteOnly)) {
+        file.write(ui->tableView->codeWidget->svg(pageNumberPlusOne));
+        file.commit();
+    }
+}
+
+void MainWindow::exportSvg() {
+
+    bool ok{};
+    int pageNumberPlusOne = QInputDialog::getInt(this, tr("Get page number (1-99)"), tr("Page"),
+        1, 1, 100, 1,
+        &ok
+    );
+    if (ok) {
+        QString name = QString("/Legends%1.svg").arg(pageNumberPlusOne);
+        QString fileName = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation)+name;
+        QFileDialog fileDialog(this);
+        fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+        if (!fileName.isEmpty()) {
+            fileDialog.setDirectory(QFileInfo(fileName).absolutePath());
+        }
+        fileDialog.selectFile(fileName);
+        switch (fileDialog.exec()) {
+        case QDialog::Accepted:
+            saveSvgFile(fileDialog.selectedFiles().at(0), pageNumberPlusOne);
+            break;
+        default:
+            break;
+        }
+    }
+
+}
+
 
 void MainWindow::releaseShowButton() {
     //ui->showPushButton->setChecked(false);
@@ -257,15 +380,18 @@ void MainWindow::showSettings() {
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {
-    QSettings settings;
 
-    settings.beginGroup("mainwindow");
-    settings.setValue("fullScreen", isFullScreen());
+    Settings::settings()->beginGroup("mainwindow");
+    Settings::settings()->setValue("fullScreen", isFullScreen());
     if (!isFullScreen()) {
-        settings.setValue("position", pos());
-        settings.setValue("size", size());
+        Settings::settings()->setValue("position", pos());
+        Settings::settings()->setValue("size", size());
     }
-    settings.endGroup();
+    Settings::settings()->endGroup();
+    int status = Settings::settings()->status();
+    if (0 != status) {
+        qDebug() << Settings::settings()->status();
+    }
 
     Super::closeEvent(event);
     qApp->quit();
@@ -275,23 +401,33 @@ void MainWindow::setLabelSize(double) {
     QSize size_mm(ui->widthDoubleSpinBox->value(), ui->heightDoubleSpinBox->value());
     ui->tableView->setLabelSize_mm(size_mm);
 
-    QSettings settings;
-
-    settings.beginGroup("labelSettings");
-    settings.setValue("width", size_mm.width());
-    settings.setValue("height", size_mm.height());
-    settings.endGroup();
+    Settings::settings()->beginGroup("labelSettings");
+    Settings::settings()->setValue("width", size_mm.width());
+    Settings::settings()->setValue("height", size_mm.height());
+    Settings::settings()->endGroup();
 }
+
+void MainWindow::setLabelFont(const QString &font) {
+    ui->tableView->setLabelFont(font);
+
+    Settings::settings()->beginGroup("labelSettings");
+    Settings::settings()->setValue("font", font);
+    Settings::settings()->endGroup();
+
+}
+
 
 void MainWindow::setFrameThickness(double thickness_mm) {
     ui->tableView->setFrameThickness(thickness_mm);
 
-    QSettings settings;
+    Settings::settings()->beginGroup("labelSettings");
+    Settings::settings()->setValue("frameThickness", thickness_mm);
+    Settings::settings()->endGroup();
 
-    settings.beginGroup("labelSettings");
-    settings.setValue("frameThickness", thickness_mm);
-    settings.endGroup();
+}
 
+void MainWindow::recentTriggered(QAction *action) {
+    loadWithName(action->text());
 }
 
 

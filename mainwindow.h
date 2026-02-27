@@ -5,6 +5,7 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QAbstractItemView>
+#include <QSettings>
 //#include "qrcodewidget.h"
 #include "settingsdialog.h"
 //#include "imagelegendsmodel.h"
@@ -49,22 +50,30 @@ public slots:
     void addPhoto();
     void updateTableView();
     void printPreview();
+    void printPdf();
     //void printSvg();
+    void exportSvg();
     void showAboutDialog();
     void showSettings();
     void setLabelSize(double );
+    void setLabelFont(const QString &font);
     void setFrameThickness(double thickness_mm);
+    void recentTriggered(QAction* action);
 
 private:
     void setStatus();
     void openPhoto(const QString &fileName);
+    void loadWithName(const QString &legends);
+    bool appendToRecent(QString fileName);
+    void updateRecentMenu();
+    void saveSvgFile(const QString &fileName, int pageNumberPlusOne);
 
 
 
 private:
     Ui::MainWindow *ui;
     SettingsDialog *settingsDialog = NULL;
-
+    QStringList recentPaths;
     
 };
 #endif // MAINWINDOW_H

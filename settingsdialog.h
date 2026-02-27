@@ -34,9 +34,12 @@ public slots:
     void editTriggerChanged(bool on);
     void noEditTrigger(bool on);
     void allEditTriggers(bool on);
+    void changePreserveCharacterSpacing(bool on);
+
 
 protected:
-    void closeEvent(QCloseEvent *event);
+    void accept() override;
+    void closeEvent(QCloseEvent *event) override;
 
 public:
 

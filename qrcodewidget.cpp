@@ -47,6 +47,10 @@ QSizeF QrCodeWidget::labelSize_mm() const {
     return QSizeF(svgDom.labelWidth_mm, svgDom.labelHeight_mm);
 }
 
+void QrCodeWidget::setLabelFont(const QString &font) {
+    svgDom.labelFont = font;
+}
+
 void QrCodeWidget::setLabelSize_mm(const QSizeF &size_mm) {
     svgDom.labelWidth_mm = size_mm.width();
     svgDom.labelHeight_mm= size_mm.height();
@@ -102,8 +106,9 @@ void QrCodeWidget::paintEvent(QPaintEvent *event) {
     QPen pen(Qt::red, 4.0);
     painter.setPen(pen);
     painter.drawRect(rect());
-
 }
+
+
 
 void QrCodeWidget::print(QPrinter *printerPtr) {
     QPainter painter(printerPtr);
@@ -153,6 +158,11 @@ void QrCodeWidget::printPreview(QPrinter *printerPtr) {
 void QrCodeWidget::finished(int value) {
     qDebug() << "QrCodeWidget::finished" << value;
 }
+
+QByteArray QrCodeWidget::svg(int pageNumberPlusOne) {
+    return svgDom.onePageToSvg(pageNumberPlusOne-1, paperSize_mm());
+}
+
 
 
 

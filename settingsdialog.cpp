@@ -1,7 +1,6 @@
 #include <QDialog>
 #include <QMap>
 #include <QString>
-#include <QSettings>
 #include "mainwindow.h"
 #include "settings.h"
 #include "settingsdialog.h"
@@ -12,13 +11,13 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     , ui(new Ui::SettingsDialog)
 {
     ui->setupUi(this);
-    triggers[ui->noEditCheckBox] = QAbstractItemView::NoEditTriggers;
+     // must not be here as set implicitely below!!! triggers[ui->noEditCheckBox] = QAbstractItemView::NoEditTriggers;
     triggers[ui->currentChangedCheckBox] = QAbstractItemView::CurrentChanged;
     triggers[ui->doubleClickedCheckBox] = QAbstractItemView::DoubleClicked;
     triggers[ui->selectedClickedCheckBox] = QAbstractItemView::SelectedClicked;
     triggers[ui->editKeyCheckBox] = QAbstractItemView::EditKeyPressed;
     triggers[ui->anyKeyCheckBox] = QAbstractItemView::AnyKeyPressed;
-    triggers[ui->allEditCheckBox] = QAbstractItemView::AllEditTriggers;
+    // must not be here !!! triggers[ui->allEditCheckBox] = QAbstractItemView::AllEditTriggers;
 }
 
 SettingsDialog::~SettingsDialog() {
@@ -27,19 +26,21 @@ SettingsDialog::~SettingsDialog() {
 
 void SettingsDialog::awake() {
     ui->defaultUrlLineEdit->setText(Settings::shared->defaultUrl());
+    ui->preserveCharacterSpacingCheckBox->setChecked(Settings::shared->preserveCharacterSpacing());
     show();
 }
 
 void SettingsDialog::retrieveEditTriggers() {
-    QSettings settings;
 
-    settings.beginGroup("mainwindow");
+    Settings::settings()->beginGroup("Settings");
 
-    int editTrigger = settings.value("EditTriggers", QAbstractItemView::CurrentChanged).toInt();
+    int editTrigger = Settings::settings()->value("EditTriggers", QAbstractItemView::CurrentChanged).toInt();
     static_cast<MainWindow *>(parent())->setEditTriggers(QAbstractItemView::EditTriggers(editTrigger));
 
     foreach (QCheckBox *checkbox, triggers.keys()) {
-        checkbox->setChecked(editTrigger & triggers[checkbox]);
+        bool checked = editTrigger & triggers[checkbox];
+        qDebug() << editTrigger << checkbox->text() << triggers[checkbox] << checked;
+        checkbox->setChecked(checked);
     }
 
     switch (editTrigger) {
@@ -64,8 +65,19 @@ void SettingsDialog::retrieveEditTriggers() {
     }
 
 
-    settings.endGroup();
+    Settings::settings()->endGroup();
 }
+
+void SettingsDialog::storeEditTriggers() {
+    Settings::settings()->beginGroup("Settings");
+
+    QAbstractItemView::EditTriggers any = getCurrentCheckBoxes();
+    Settings::settings()->setValue("EditTriggers", any.toInt());
+    static_cast<MainWindow *>(parent())->setEditTriggers(any);
+
+    Settings::settings()->endGroup();
+}
+
 
 
 QAbstractItemView::EditTriggers SettingsDialog::getCurrentCheckBoxes() {
@@ -92,18 +104,6 @@ QAbstractItemView::EditTriggers SettingsDialog::getCurrentCheckBoxes() {
 }
 
 
-void SettingsDialog::storeEditTriggers() {
-    QSettings settings;
-
-    settings.beginGroup("mainwindow");
-
-    QAbstractItemView::EditTriggers any = getCurrentCheckBoxes();
-    settings.setValue("EditTriggers", any.toInt());
-    static_cast<MainWindow *>(parent())->setEditTriggers(any);
-
-    settings.endGroup();
-    qDebug() << "SettingsDialog::storeEditTriggers" << settings.fileName();
-}
 
 void SettingsDialog::editTriggerChanged(bool on) {
     Q_UNUSED(on)
@@ -145,9 +145,19 @@ void SettingsDialog::allEditTriggers(bool on) {
     storeEditTriggers();
 }
 
+void SettingsDialog::changePreserveCharacterSpacing(bool on) {
+    Settings::shared->setPreseveCharacterSpacing(on);
+}
+
+void SettingsDialog::accept() {
+    close();
+}
+
 
 
 void SettingsDialog::closeEvent(QCloseEvent *event) {
     Q_UNUSED(event)
+    Settings::shared->setDefaultUrl(ui->defaultUrlLineEdit->text());
+    Settings::shared->setPreseveCharacterSpacing(ui->preserveCharacterSpacingCheckBox->isChecked());
     Settings::shared->store();
 }

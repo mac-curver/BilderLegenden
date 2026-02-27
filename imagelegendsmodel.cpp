@@ -56,6 +56,8 @@ QVariant ImageLegendsModel::data(const QModelIndex &index, int role) const {
             return dataRows.at(row).columnData(column);
         case Qt::DecorationRole:
             return dataRows.at(row).columnDecoration(column);
+        case Qt::ForegroundRole:
+            return dataRows.at(row).columnColor(column);
         default:
             return QVariant();
         }
@@ -112,13 +114,13 @@ bool ImageLegendsModel::setData(const QModelIndex &index, const QVariant &value,
         int column = index.column();
         RowType *rowPtr = &dataRows[index.row()];
         rowPtr->setColumnData(column, value);
-
         emit dataChanged(index, index, {role});
 
         return true;
     }
     return false;
 }
+
 
 void ImageLegendsModel::inserRowsLocal(int position, int numberOfRows) {
 
@@ -265,7 +267,9 @@ QMimeData *ImageLegendsModel::mimeData(const QModelIndexList &indexes) const {
 }
 
 
-bool ImageLegendsModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &modelIndex) {
+bool ImageLegendsModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+                                     int row, int column, const QModelIndex &modelIndex
+) {
     Q_UNUSED(column)
     qDebug() << "ImageLegendsModel::dropMimeData" << action << data->formats();
     if (action != Qt::IgnoreAction) {

@@ -1,7 +1,9 @@
 #include <QPoint>
+#include <QPainterPath>
 #include <QTextStream>
 #include <QtCore/qassert.h>
 
+#include "settings.h"
 #include "rowtype.h"
 #include "svgdom.h"
 
@@ -31,9 +33,7 @@ void SvgDom::plotSingleLabel(int line, const QPointF &offset) {
     QDomElement authorElement = makeCenteredText(row.author, authorSize, labelHeight_mm-border);
     transform.appendChild(authorElement);
 
-    //qDebug() << "SvgDom::plotSingleLabel" << labelWidth_mm << labelHeight_mm;
     const QrCode qr = QrCode::encodeText(row.url.toStdString().c_str(), QrCode::Ecc::MEDIUM);
-    //qDebug() << "SvgDom::plotSingleLabel" << labelWidth_mm-matrixCodeScale*qr.getSize()-border << labelHeight_mm-matrixCodeScale*qr.getSize()-border;
 
     if (!row.url.isEmpty()) {
         const QrCode qr = QrCode::encodeText(row.url.toStdString().c_str(), QrCode::Ecc::MEDIUM);
@@ -48,7 +48,7 @@ void SvgDom::plotSingleLabel(int line, const QPointF &offset) {
     }
 
     root.appendChild(transform);
-    qDebug() << toString();
+    //qDebug() << toString();
 }
 
 QSizeF SvgDom::plotSize(const QSizeF &pageSize_mm) const {
@@ -157,13 +157,94 @@ QDomElement SvgDom::makeRect(const QPointF &offset, const QSizeF &size) {
 }
 
 QDomElement SvgDom::makeCenteredText(const QString &text, int size_px, int yPosition) {
+    if (Settings::shared->preserveCharacterSpacing()) {
+        return makeCenteredTextAsPath(text, size_px, yPosition);
+    }
+    else {
+        return makeCenteredTextAsText(text, size_px, yPosition);
+    }
+}
+
+QDomElement SvgDom::makeCenteredTextAsText(
+    const QString &text,
+    int size_px,
+    int yPosition
+) {
     QDomElement title = createElement("text");
-    title.setAttribute("style", QString("font-size:%1px;font-family:Arial;text-align:center;text-anchor:middle").arg(size_px));
+    title.setAttribute("style", QString("font-size:%1px;font-family:%2;text-align:center;text-anchor:middle")
+                                    .arg(size_px).arg(labelFont));
     title.setAttribute("x", labelWidth_mm/2.0);
     title.setAttribute("y", yPosition);
     title.appendChild(createTextNode(text));
     return title;
+
 }
+
+/// KI Generated code
+QDomElement SvgDom::makeCenteredTextAsPath(
+    const QString &text,
+    int size_px,
+    int yPosition
+) {
+    // 1. Font vorbereiten
+    QFont font(labelFont);
+    font.setPixelSize(size_px);
+
+    // 2. Pfad erzeugen
+    QPainterPath path;
+    path.addText(0, 0, font, text);
+
+    // 3. Bounding Box bestimmen
+    QRectF bounds = path.boundingRect();
+
+    // 4. X‑Position zentrieren
+    double xCenter = labelWidth_mm / 2.0;
+    double xOffset = xCenter-bounds.width() / 2.0;
+
+    // 5. SVG‑Pfadstring erzeugen
+    QString svgPath;
+
+    if (!path.isEmpty()) {
+        QPainterPath::Element e = path.elementAt(0);
+
+        double x = e.x + xOffset;
+        double y = e.y + yPosition;
+        svgPath += QString("M %1 %2 ").arg(x).arg(y);
+
+        for (int i = 1; i < path.elementCount(); ++i) {
+            e = path.elementAt(i);
+
+            x = e.x + xOffset;
+            y = e.y + yPosition;
+            if (e.isMoveTo()) {
+                svgPath += QString("M %1 %2 ").arg(x).arg(y);
+            }
+            else if (e.isLineTo()) {
+                svgPath += QString("L %1 %2 ").arg(x).arg(y);
+            }
+            else if (e.isCurveTo()) {
+                double x1 = path.elementAt(i+1).x + xOffset;
+                double y1 = path.elementAt(i+1).y + yPosition;
+                double x2 = path.elementAt(i+2).x + xOffset;
+                double y2 = path.elementAt(i+2).y + yPosition;
+
+                svgPath += QString("C %1 %2 %3 %4 %5 %6 ")
+                               .arg(x).arg(y)
+                               .arg(x1).arg(y1)
+                               .arg(x2).arg(y2)
+                    ;
+            }
+        }
+        svgPath += QString("Z");
+    }
+    // 6. SVG‑Element erzeugen
+    QDomElement pathElem = createElement("path");
+    pathElem.setAttribute("d", svgPath);
+    pathElem.setAttribute("style", "fill:black");
+
+    return pathElem;
+}
+
 
 QDomElement SvgDom::makeQrCode(const QrCode &qr) {
 
@@ -186,14 +267,15 @@ QDomElement SvgDom::makeQrCode(const QrCode &qr) {
     return qrElement;
 }
 
-
+/*
 void SvgDom::addRect() {
     root.appendChild(makeRect(QPointF(), QSizeF(labelWidth_mm, labelHeight_mm)));
 }
 
 void SvgDom::addText(const QString &text, double size_px, double yPosition) {
-    root.appendChild(makeCenteredText(text, size_px, yPosition));
+    root.appendChild(makeCenteredTextAsPath(text, size_px, yPosition));
 }
+*/
 
 
 

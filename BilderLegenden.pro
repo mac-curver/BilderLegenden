@@ -3,7 +3,7 @@ QT       += core gui widgets svg svgwidgets xml printsupport
 
 CONFIG += c++17
 
-VERSION   = 2.01.01
+VERSION   = 3.01.01
 
 MOC_DIR = ../build/moc
 OBJECTS_DIR = ../build/objects

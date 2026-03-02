@@ -1,5 +1,6 @@
 <RCC>
-  <qresource prefix="/i18n">
-    <file>qtbase_de.qm</file>
-  </qresource>
+    <qresource prefix="/i18n">
+        <file>qtbase_de.qm</file>
+        <file>qtbase_en.qm</file>
+    </qresource>
 </RCC>

@@ -5,14 +5,19 @@ CONFIG += c++17
 
 VERSION   = 3.01.01
 
+# Avoid file mess
 MOC_DIR = ../build/moc
 OBJECTS_DIR = ../build/objects
+UI_DIR = ../build/ui
+RCC_DIR = ../build/resources
 
 
 mac {
 #   COMMON_PATH=$$PWD/../../GitQtLocal/Mac_Common
     DEFINES += USE_TOUCH
     ICON = Images/BilderLegendenIcon.icns # must be added to project (created with GC)
+
+    QMAKE_INFO_PLIST = Info.plist
 }
 
 win32 { #even for 64 bit!
@@ -93,6 +98,7 @@ RESOURCES += \
     resources.qrc \
     translations.qrc
 
+
 # qtbase_de.qm must be in project directory!
 TRANSLATIONS += \
     translations/BilderLegenden_en_US.ts \
@@ -106,6 +112,7 @@ CONFIG += embed_translations
 DISTFILES += \
     Images/BilderLegendenIcon.icns \
     Images/BilderLegendenIcon.ico \
+    Info.plist \
     Windeploy.bat
 
 # lupdate BilderLegenden.pro see Tools !

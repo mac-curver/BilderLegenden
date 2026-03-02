@@ -69,6 +69,7 @@ void PropagatingTableView::showPrintPreview(bool showIt) {
     printPreviewDialog->setVisible(showIt);
 
     if (showIt) {
+        printPreviewDialog->raise();
         printPreviewDialog->setWindowTitle(tr("Print Legends"));
         switch (printPreviewDialog->exec()) {
         case QDialog::Accepted:
@@ -160,11 +161,11 @@ void PropagatingTableView::dropEvent(QDropEvent *event) {
 void PropagatingTableView::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
     QModelIndex index;
     foreach (index, selected.indexes()) {
-        QModelIndex index = selected.indexes().constFirst();
+        //QModelIndex index = selected.indexes().constFirst();
         legendsModel.dataRows[index.row()].enterEditMode(index.column());
     }
     foreach (index, deselected.indexes()) {
-        QModelIndex index = selected.indexes().constFirst();
+        //QModelIndex index = selected.indexes().constFirst();
         legendsModel.dataRows[index.row()].exitEditMode(index.column());
     }
 

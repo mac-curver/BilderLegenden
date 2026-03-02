@@ -28,6 +28,9 @@ public:
     void setPreseveCharacterSpacing(bool preserve);
     bool preserveCharacterSpacing();
 
+    void setDontUseNativeDialog(bool native);
+    bool dontUseNativeDialog();
+
     QString svgFileName();
     QString pdfFileName();
 
@@ -38,6 +41,7 @@ private:
     QString _defaultUrl = "<https://www.fotocommunity.de>";
     QSettings *settingsPtr = NULL;
     bool _preserveCharacterSpacing = true;
+    bool _dontUseNativeDialogs = false;
 
 };
 

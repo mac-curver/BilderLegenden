@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>518</width>
-    <height>314</height>
+    <height>361</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Preferences</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -31,10 +31,16 @@
      <property name="topMargin">
       <number>10</number>
      </property>
-     <item row="3" column="1">
-      <widget class="QCheckBox" name="selectedClickedCheckBox">
+     <item row="7" column="0">
+      <widget class="QLabel" name="defaultLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
-        <string>Selected Clicked</string>
+        <string>Default URL</string>
        </property>
       </widget>
      </item>
@@ -48,10 +54,10 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
-      <widget class="QCheckBox" name="editKeyCheckBox">
+     <item row="3" column="1">
+      <widget class="QCheckBox" name="selectedClickedCheckBox">
        <property name="text">
-        <string>Edit Key Pressed</string>
+        <string>Selected Clicked</string>
        </property>
       </widget>
      </item>
@@ -62,6 +68,34 @@
        </property>
        <property name="checked">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QCheckBox" name="anyKeyCheckBox">
+       <property name="text">
+        <string>Any Key Pressed</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QCheckBox" name="allEditCheckBox">
+       <property name="text">
+        <string>All edit Triggers</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QCheckBox" name="editKeyCheckBox">
+       <property name="text">
+        <string>Edit Key Pressed</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="doubleClickedCheckBox">
+       <property name="text">
+        <string>Double Clicked</string>
        </property>
       </widget>
      </item>
@@ -90,44 +124,20 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="defaultLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Default URL</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QCheckBox" name="doubleClickedCheckBox">
-       <property name="text">
-        <string>Double Clicked</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <widget class="QCheckBox" name="allEditCheckBox">
-       <property name="text">
-        <string>All edit Triggers</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QCheckBox" name="anyKeyCheckBox">
-       <property name="text">
-        <string>Any Key Pressed</string>
-       </property>
-      </widget>
-     </item>
      <item row="8" column="1">
       <widget class="QCheckBox" name="preserveCharacterSpacingCheckBox">
        <property name="text">
         <string>Preserve Character Spacing (Correct kerning)</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="QCheckBox" name="dontUseNativeDialogsCheckBox">
+       <property name="text">
+        <string>Don't use native dialogs (otherwise translations may be missing)</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -294,10 +304,44 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>preserveCharacterSpacingCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>changePreserveCharacterSpacing(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>300</x>
+     <y>274</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>258</x>
+     <y>180</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dontUseNativeDialogsCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>changeUseNativeDialogs(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>300</x>
+     <y>303</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>258</x>
+     <y>180</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>editTriggerChanged(bool)</slot>
   <slot>noEditTrigger(bool)</slot>
   <slot>allEditTriggers(bool)</slot>
+  <slot>changePreserveCharacterSpacing(bool)</slot>
+  <slot>changeUseNativeDialogs(bool)</slot>
  </slots>
 </ui>

@@ -35,6 +35,7 @@ public slots:
     void noEditTrigger(bool on);
     void allEditTriggers(bool on);
     void changePreserveCharacterSpacing(bool on);
+    void changeUseNativeDialogs(bool on);
 
 
 protected:

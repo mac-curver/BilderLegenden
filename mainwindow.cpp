@@ -93,15 +93,6 @@ bool MainWindow::awake() {
     //ui->tableView->setSvgDisplay(svgDisplay);
 
     recentPaths = Settings::settings()->value("RecentFiles").toStringList();
-    /*
-    QStringList reversed = Settings::settings()->value("RecentFiles").toStringList();
-
-    for (auto item = reversed.cbegin(), end = reversed.cend(); item != end; ++item) {
-       recentPaths.prepend(*item);
-    }
-    Settings::settings()->setValue("RecentFiles", recentPaths);
-    */
-
     updateRecentMenu();
 
 
@@ -115,6 +106,10 @@ bool MainWindow::awake() {
     //insertRows(-1, 4);
 
     show();
+
+    QString testTranslation = QObject::tr("German");
+    qDebug() << testTranslation;
+
     return true;
 }
 
@@ -175,21 +170,30 @@ void MainWindow::updateRecentMenu() {
 
 void MainWindow::save() {
     qDebug() << "MainWindow::save()";
-    QString fileName=QStandardPaths::writableLocation(QStandardPaths::HomeLocation)+"/legends.xml";
     QFileDialog fileDialog(this);
+    qDebug() << Settings::shared->dontUseNativeDialog();
+    fileDialog.setOption(QFileDialog::DontUseNativeDialog, Settings::shared->dontUseNativeDialog());
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+    QString fileName;
+    if (recentPaths.isEmpty()) {
+        fileName = QStandardPaths::writableLocation(QStandardPaths::HomeLocation)+"/legends.xml";
+    }
+    else {
+        fileName = recentPaths.last();
+    }
     if (!fileName.isEmpty()) {
         fileDialog.setDirectory(QFileInfo(fileName).absolutePath());
     }
     fileDialog.selectFile(fileName);
     switch (fileDialog.exec()) {
     case QDialog::Accepted:
-        fileName = fileDialog.selectedFiles().at(0);
-        static_cast<ImageLegendsModel*>(ui->tableView->model())->saveFile(fileName);
+        if (!fileDialog.selectedFiles().isEmpty()) {
+            fileName = fileDialog.selectedFiles().at(0);
+            static_cast<ImageLegendsModel*>(ui->tableView->model())->saveFile(fileName);
 
-        appendToRecent(fileName);
-        Settings::settings()->setValue("RecentFiles", recentPaths);
-
+            appendToRecent(fileName);
+            Settings::settings()->setValue("RecentFiles", recentPaths);
+        }
         break;
     default:
         break;
@@ -201,6 +205,7 @@ void MainWindow::load() {
     qDebug() << "MainWindow::load()";
     QString fileName=QStandardPaths::standardLocations(QStandardPaths::HomeLocation).constFirst()+"/legends.xml";
     QFileDialog fileDialog(this);
+    fileDialog.setOption(QFileDialog::DontUseNativeDialog, Settings::shared->dontUseNativeDialog());
     fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
     if (!fileName.isEmpty()) {
         fileDialog.setDirectory(QFileInfo(fileName).absolutePath());
@@ -266,17 +271,17 @@ void MainWindow::openPhoto(const QString &fileName) {
 
 void MainWindow::addPhoto() {
     qDebug() << "MainWindow::addPhoto()";
-    QString fileName = QStandardPaths::standardLocations(QStandardPaths::PicturesLocation).constFirst()+"/";
     QFileDialog fileDialog(this);
+    fileDialog.setOption(QFileDialog::DontUseNativeDialog, Settings::shared->dontUseNativeDialog());
     fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
-    if (!fileName.isEmpty()) {
-        fileDialog.setDirectory(QFileInfo(fileName).absolutePath());
+    if (_recentPhoto.isEmpty()) {
+        _recentPhoto = QStandardPaths::standardLocations(QStandardPaths::PicturesLocation).constFirst()+"/";
     }
-    fileDialog.selectFile(fileName);
+    fileDialog.selectFile(_recentPhoto);
     switch (fileDialog.exec()) {
     case QDialog::Accepted:
-        fileName = fileDialog.selectedFiles().at(0);
-        openPhoto(fileName);
+        _recentPhoto = fileDialog.selectedFiles().at(0);
+        openPhoto(_recentPhoto);
         break;
     default:
         break;
@@ -376,7 +381,7 @@ void MainWindow::showAboutDialog() {
 }
 
 void MainWindow::showSettings() {
-    settingsDialog->setVisible(true);
+    settingsDialog->awake();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event) {

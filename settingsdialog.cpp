@@ -27,6 +27,7 @@ SettingsDialog::~SettingsDialog() {
 void SettingsDialog::awake() {
     ui->defaultUrlLineEdit->setText(Settings::shared->defaultUrl());
     ui->preserveCharacterSpacingCheckBox->setChecked(Settings::shared->preserveCharacterSpacing());
+    ui->dontUseNativeDialogsCheckBox->setChecked(Settings::shared->dontUseNativeDialog());
     show();
 }
 
@@ -149,6 +150,10 @@ void SettingsDialog::changePreserveCharacterSpacing(bool on) {
     Settings::shared->setPreseveCharacterSpacing(on);
 }
 
+void SettingsDialog::changeUseNativeDialogs(bool on) {
+    Settings::shared->setDontUseNativeDialog(on);
+}
+
 void SettingsDialog::accept() {
     close();
 }
@@ -158,6 +163,6 @@ void SettingsDialog::accept() {
 void SettingsDialog::closeEvent(QCloseEvent *event) {
     Q_UNUSED(event)
     Settings::shared->setDefaultUrl(ui->defaultUrlLineEdit->text());
-    Settings::shared->setPreseveCharacterSpacing(ui->preserveCharacterSpacingCheckBox->isChecked());
+
     Settings::shared->store();
 }

@@ -74,6 +74,7 @@ private:
     Ui::MainWindow *ui;
     SettingsDialog *settingsDialog = NULL;
     QStringList recentPaths;
+    QString _recentPhoto = "";
     
 };
 #endif // MAINWINDOW_H

@@ -90,7 +90,17 @@ FORMS += \
 #    svgmaindisplay.ui
 
 RESOURCES += \
-    resources.qrc
+    resources.qrc \
+    translations.qrc
+
+# qtbase_de.qm must be in project directory!
+TRANSLATIONS += \
+    translations/BilderLegenden_en_US.ts \
+    translations/BilderLegenden_de_DE.ts
+
+
+CONFIG += lrelease
+CONFIG += embed_translations
 
 
 DISTFILES += \
@@ -98,3 +108,5 @@ DISTFILES += \
     Images/BilderLegendenIcon.ico \
     Windeploy.bat
 
+# lupdate BilderLegenden.pro see Tools !
+# lrelease myproject.pro see deploy

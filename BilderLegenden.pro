@@ -3,13 +3,13 @@ QT       += core gui widgets svg svgwidgets xml printsupport
 
 CONFIG += c++17
 
-VERSION   = 3.01.01
+VERSION   = 3.01.03
 
-# Avoid file mess
+# Avoid file mess, but don't move the rcc dir as otherwise translation fails
 MOC_DIR = ../build/moc
 OBJECTS_DIR = ../build/objects
 UI_DIR = ../build/ui
-RCC_DIR = ../build/resources
+
 
 
 mac {
@@ -17,7 +17,7 @@ mac {
     DEFINES += USE_TOUCH
     ICON = Images/BilderLegendenIcon.icns # must be added to project (created with GC)
 
-    QMAKE_INFO_PLIST = Info.plist
+    QMAKE_INFO_PLIST = Info.plist # Otherwise mac does not recognize languages (may be created by macdeploy)
 }
 
 win32 { #even for 64 bit!

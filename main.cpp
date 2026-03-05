@@ -17,6 +17,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationVersion(APP_VERSION);
 
     QTranslator translator;
+    //QLocale().setDefault(QLocale("de"));
     if (translator.load(QLocale(), "BilderLegenden", "_", ":/i18n")) {
         qDebug() << translator.filePath();
         QCoreApplication::installTranslator(&translator);

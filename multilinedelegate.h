@@ -4,6 +4,7 @@
 #include <QStyledItemDelegate>
 #include <QPlainTextEdit>
 #include "customprintpreview.h"
+//#include "printpreviewdialog.h"
 
 class MultiLineDelegate : public QStyledItemDelegate {
     Q_OBJECT

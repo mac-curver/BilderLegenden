@@ -2,9 +2,41 @@
 
 Settings *Settings::shared = NULL;
 
-QSettings *Settings::settings() {
-    return shared->settingsPtr;
+void Settings::beginGroup(const QString &key) {
+
+    Q_ASSERT(key.front().isUpper());
+    settingsPtr->beginGroup(key);
+    qDebug() << "+" << settingsPtr->group();
 }
+
+void Settings::endGroup() {
+    qDebug() << "-" << settingsPtr->group();
+    settingsPtr->endGroup();
+}
+
+/*
+void Settings::clearBlocking() {
+    blockSettings = 0;
+}
+
+bool Settings::blocked() {
+    return blockSettings > 0;
+}
+*/
+
+QVariant Settings::value(const QString &key, QVariant defaultValue) {
+    Q_ASSERT(key.front().isUpper());
+    qDebug() << " " << key << "=" << settingsPtr->value(key, defaultValue);
+    return settingsPtr->value(key, defaultValue);
+}
+
+void Settings::setValue(const QString &key, QVariant newValue) {
+    //if (!blocked()) {
+    qDebug() << " " << key << ":" << newValue;
+    settingsPtr->setValue(key, newValue);
+    //}
+}
+
 
 void Settings::setDefaultUrl(const QString &url) {
     _defaultUrl = url;
@@ -33,6 +65,67 @@ bool Settings::dontUseNativeDialog() {
     return _dontUseNativeDialogs;
 }
 
+void Settings::setAddPhotoInfo(bool showIt) {
+    _addPhotoInfo = showIt;
+}
+
+bool Settings::addPhotoInfo() {
+    return _addPhotoInfo;
+}
+
+void Settings::setAddCuttingLine(bool plotThem) {
+    _addPlottingLines = plotThem;
+}
+
+bool Settings::addCuttingLine() {
+    return _addPlottingLines;
+}
+
+void Settings::setWhiteOnBack(bool isInverse) {
+    _whiteOnBlack = isInverse;
+}
+
+bool Settings::whiteOnBlack() {
+    return _whiteOnBlack;
+}
+
+void Settings::setLabelAlignment(Qt::Alignment alignment) {
+    _alignment = alignment;
+}
+
+Qt::Alignment Settings::labelAlignment() {
+    return _alignment;
+}
+
+void Settings::storePageLayout(QPrinter *printer) {
+    /*
+    beginGroup("Print");
+
+    QPageLayout layout = printer->pageLayout();
+
+    setValue("Orientation", layout.orientation());
+    setValue("PageSize", layout.pageSize().id());
+
+    endGroup();
+    */
+}
+
+void Settings::retrievePageLayout(QPrinter *printer) {
+    beginGroup("Print");
+
+    QPageLayout pageLayout = printer->pageLayout();
+    int asInt = value("Orientation", pageLayout.orientation()).toInt();
+    QPageLayout::Orientation orientation = static_cast<QPageLayout::Orientation>(asInt);
+    pageLayout.setOrientation(orientation);
+    int idAsInt =  value("PageSize", QPageSize::A4).toInt();
+    QPageSize::PageSizeId id = static_cast<QPageSize::PageSizeId>(idAsInt);
+    pageLayout.setPageSize(QPageSize(id));
+
+    endGroup();
+
+    printer->setPageLayout(pageLayout);
+}
+
 
 QString Settings::svgFileName() {
     Q_ASSERT(false);
@@ -46,9 +139,7 @@ QString Settings::pdfFileName() {
 
 
 Settings::Settings() {
-    settingsPtr = new QSettings(APP_COMPANY, APP_NAME);
-    qDebug() << settingsPtr->fileName();
-    qDebug() << settingsPtr->applicationName() << settingsPtr->organizationName() << settingsPtr->isWritable() << settingsPtr->fileName();
+    settingsPtr = new QSettings(APP_DOMAIN, APP_NAME);
 }
 
 Settings::~Settings() {
@@ -67,22 +158,45 @@ Settings *Settings::createSettings() {
 
 void Settings::retrieve() {
 
-    settingsPtr->beginGroup("Settings");
+    beginGroup("Settings");
+    _defaultUrl = value("DefaultUrl", _defaultUrl).toString();
+    _preserveCharacterSpacing = value("PreserveCharacterSpacing", _preserveCharacterSpacing).toBool();
+    _dontUseNativeDialogs = value("DonUseNativeDialogs", _dontUseNativeDialogs).toBool();
+    endGroup();
 
-    _defaultUrl = settingsPtr->value("DefaultUrl", _defaultUrl).toString();
-    _preserveCharacterSpacing = settingsPtr->value("PreserveCharacterSpacing", _preserveCharacterSpacing).toBool();
-    _dontUseNativeDialogs = settingsPtr->value("DonUseNativeDialogs", _dontUseNativeDialogs).toBool();
+    beginGroup("Label");
+    _addPhotoInfo = value("AddInfo", _addPhotoInfo).toBool();
+    int alignmentAsInt = static_cast<int>(_alignment);
+    alignmentAsInt = value("Alignment", alignmentAsInt).toInt();
+    _alignment = static_cast<Qt::Alignment>(alignmentAsInt);
+    _whiteOnBlack =value("WhiteOnBlack", _whiteOnBlack).toBool();
+    endGroup();
 
-    settingsPtr->endGroup();
+    beginGroup("Plot");
+    _addPlottingLines = value("CuttingLines", _addPlottingLines).toBool();
+    endGroup();
+
 }
 
 void Settings::store() {
 
-    settingsPtr->beginGroup("Settings");
+    beginGroup("Settings");
+    setValue("PreserveCharacterSpacing", _preserveCharacterSpacing);
+    setValue("UseNativeDialogs", _dontUseNativeDialogs);
+    setValue("DefaultUrl", _defaultUrl);
+    endGroup();
 
-    settingsPtr->setValue("PreserveCharacterSpacing", _preserveCharacterSpacing);
-    settingsPtr->setValue("UseNativeDialogs", _dontUseNativeDialogs);
-    settingsPtr->setValue("DefaultUrl", _defaultUrl);
+    beginGroup("Label");
+    setValue("AddInfo", _addPhotoInfo);
+    int alignmentAsInt = static_cast<int>(_alignment);
+    setValue("Alignment", alignmentAsInt);
+    setValue("WhiteOnBlack", _whiteOnBlack);
+    endGroup();
 
-    settingsPtr->endGroup();
+    beginGroup("Plot");
+    setValue("CuttingLines", _addPlottingLines);
+    endGroup();
+
+
 }
+

@@ -36,7 +36,7 @@ public:
         this->author = author;
         this->url = url;
 
-        this->pixMap = createPixmap();
+        this->pixMap = getPixmap();
     }
 
     /*
@@ -66,7 +66,7 @@ public:
 
     void setColumnData(int column, const QVariant &text);
 
-    QPixmap createPixmap() const;
+    QPixmap getPixmap() const;
 
     void enterEditMode(int column);
     void exitEditMode(int column);
@@ -84,7 +84,6 @@ public:
 
 private:
     bool underEdit[N_ColumnTypes] = {false, false, false, false, false, false};
-
 
 };
 

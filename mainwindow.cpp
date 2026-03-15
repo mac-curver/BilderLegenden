@@ -1,3 +1,9 @@
+///
+/// Terminal
+/// > defaults delete de.legoesprit.BilderLegenden
+/// > killall cfprefsd
+///
+
 #include <QPrinter>
 #include <QPainter>
 #include <QPrintDialog>
@@ -14,7 +20,6 @@
 
 //#include "logfile.h"
 #include "settings.h"
-//#include "customprintpreview.h"
 #include "propagatingtableview.h"
 #include "aboutdialog.h"
 #include "mainwindow.h"
@@ -34,55 +39,54 @@ MainWindow::~MainWindow() {
 
 bool MainWindow::awake() {
 
-    Settings::settings()->beginGroup("labelSettings");
-    QString test = Settings::settings()->value("font", "emptyfont").toString();
-    Settings::settings()->endGroup();
-
     if (qApp->queryKeyboardModifiers() & Qt::ShiftModifier) {
-        qDebug() << "Shiftkey was down";
+        //qDebug() << "Shiftkey was down";
     }
     else {
-        Settings::settings()->beginGroup("mainwindow");
-        if (!isFullScreen()) {
-            Settings::settings()->setValue("size", size());
-        }
-        QSize newSize = Settings::settings()->value("size", QSize(600, 400)).toSize();
-        QPoint newPos = Settings::settings()->value("position", QSize(100, 50)).toPoint();
-        resize(newSize);
-        move(newPos);
-        bool shouldBeFullScreen = Settings::settings()->value("fullScreen", false).toBool();
-        Settings::settings()->endGroup();
+        Settings::shared->beginGroup("Mainwindow");
+
+        bool shouldBeFullScreen = Settings::shared->value("FullScreen", false).toBool();
 
         if (shouldBeFullScreen) {
-            Settings::settings()->setValue("size", size());
+            Settings::shared->setValue("Size", size());
             showFullScreen();
         }
         else {
+            QSize newSize = Settings::shared->value("Size", QSize(600, 400)).toSize();
+            QPoint newPos = Settings::shared->value("Position", QSize(100, 50)).toPoint();
+            move(newPos);
+            resize(newSize);
             showNormal();
         }
+
+        Settings::shared->endGroup();
     }
 
 
     if (NULL == settingsDialog) {
         settingsDialog = new SettingsDialog(this);
     }
-    settingsDialog->retrieveEditTriggers();
+    settingsDialog->retrieveEditTriggers(ui->tableView);
 
 
-    Settings::settings()->beginGroup("labelSettings");
-
+    Settings::shared->beginGroup("Label");
+    Settings::shared->setReadOnly();
     ui->fontComboBox->setFontFilters(QFontComboBox::ScalableFonts);
-    QString settingsFontAsString = Settings::settings()->value("font", ui->fontComboBox->currentFont()).toString();
+    QString settingsFontAsString = Settings::shared->value("Font", QFont("Arial")).toString();
     ui->fontComboBox->setCurrentFont(QFont(settingsFontAsString));
     ui->tableView->setLabelFont(settingsFontAsString);
 
-    ui->widthDoubleSpinBox->setValue(Settings::settings()->value("width", ui->widthDoubleSpinBox->value()).toDouble());
-    ui->heightDoubleSpinBox->setValue(Settings::settings()->value("height", ui->heightDoubleSpinBox->value()).toDouble());
-    ui->frameDoubleSpinBox->setValue(Settings::settings()->value("frameThickness", ui->frameDoubleSpinBox->value()).toDouble());
-    Settings::settings()->endGroup();
+    double width = Settings::shared->value("Width", ui->widthDoubleSpinBox->value()).toDouble();
+    double height = Settings::shared->value("Height", ui->heightDoubleSpinBox->value()).toDouble();
+    double frameThickness = Settings::shared->value("FrameThickness", ui->frameDoubleSpinBox->value()).toDouble();
+    ui->widthDoubleSpinBox->setValue(width);
+    ui->heightDoubleSpinBox->setValue(height);
+    ui->frameDoubleSpinBox->setValue(frameThickness);
+
+    Settings::shared->endGroup();
 
     // Does not Work!? but for file menu it works ?!
-    //connect(ui->actionPreferences->menu(), &QMenu::aboutToShow, this, &MainWindow::onAboutToShowMainMenu);
+    connect(ui->menuBildLegenden, &QMenu::aboutToShow, this, &MainWindow::onAboutToShowMainMenu);
 
     setAcceptDrops(true);
 
@@ -92,7 +96,7 @@ bool MainWindow::awake() {
     //svgDisplay->setVisible(ui->showPushButton->isChecked());
     //ui->tableView->setSvgDisplay(svgDisplay);
 
-    recentPaths = Settings::settings()->value("RecentFiles").toStringList();
+    recentPaths = Settings::shared->value("RecentFiles").toStringList();
     updateRecentMenu();
 
 
@@ -101,21 +105,17 @@ bool MainWindow::awake() {
         loadWithName(legendsFileName);
     }
 
+    ui->tableView->setColumnWidths();
+
     connect(ui->tableView, &PropagatingTableView::requestUpdate, this, &MainWindow::updateTableView);
 
-    //insertRows(-1, 4);
+    Settings::shared->clearReadOnly();
 
-    show();
-
-    QString testTranslation = QObject::tr("German");
-    qDebug() << testTranslation;
 
     return true;
 }
 
-void MainWindow::showEvent(QShowEvent *event) {
-    Super::showEvent(event);
-}
+
 
 /*
 void MainWindow::dragEnterEvent(QDragEnterEvent *event)  {
@@ -169,9 +169,7 @@ void MainWindow::updateRecentMenu() {
 
 
 void MainWindow::save() {
-    qDebug() << "MainWindow::save()";
     QFileDialog fileDialog(this);
-    qDebug() << Settings::shared->dontUseNativeDialog();
     fileDialog.setOption(QFileDialog::DontUseNativeDialog, Settings::shared->dontUseNativeDialog());
     fileDialog.setAcceptMode(QFileDialog::AcceptSave);
     QString fileName;
@@ -192,7 +190,7 @@ void MainWindow::save() {
             static_cast<ImageLegendsModel*>(ui->tableView->model())->saveFile(fileName);
 
             appendToRecent(fileName);
-            Settings::settings()->setValue("RecentFiles", recentPaths);
+            Settings::shared->setValue("RecentFiles", recentPaths);
         }
         break;
     default:
@@ -215,6 +213,8 @@ void MainWindow::load() {
     case QDialog::Accepted:
         fileName = fileDialog.selectedFiles().at(0);
         loadWithName(fileName);
+        appendToRecent(fileName);
+        Settings::shared->setValue("RecentFiles", recentPaths);
         break;
     default:
         break;
@@ -270,7 +270,7 @@ void MainWindow::openPhoto(const QString &fileName) {
 
 
 void MainWindow::addPhoto() {
-    qDebug() << "MainWindow::addPhoto()";
+    //qDebug() << "MainWindow::addPhoto()";
     QFileDialog fileDialog(this);
     fileDialog.setOption(QFileDialog::DontUseNativeDialog, Settings::shared->dontUseNativeDialog());
     fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -296,6 +296,7 @@ void MainWindow::updateTableView() {
 void MainWindow::printPreview() {
     setStatus();
     ui->tableView->showPrintPreview(true);
+    ui->tableView->retrievePrintSettings();
 }
 
 void MainWindow::printPdf() {
@@ -316,8 +317,9 @@ void MainWindow::printPdf() {
         fileName = fileDialog.selectedFiles().at(0);
         printer.setOutputFileName(fileName);
         success = printer.setPageMargins(QMarginsF(12, 16, 12, 20), QPageLayout::Millimeter);
+        Q_UNUSED(success)
         ui->tableView->codeWidget->render(&painter);
-        qDebug() << success;
+        //qDebug() << success;
         break;
     default:
         break;
@@ -371,9 +373,6 @@ void MainWindow::setEditTriggers(QAbstractItemView::EditTriggers triggers) {
 }
 
 
-//void MainWindow::printSvg() {
-//    svgDisplay->doPrint();
-//}
 
 void MainWindow::showAboutDialog() {
     AboutDialog *about = new AboutDialog(this);
@@ -386,18 +385,15 @@ void MainWindow::showSettings() {
 
 void MainWindow::closeEvent(QCloseEvent *event) {
 
-    Settings::settings()->beginGroup("mainwindow");
-    Settings::settings()->setValue("fullScreen", isFullScreen());
+    ui->tableView->storeColumnWidths();
+    Settings::shared->beginGroup("Mainwindow");
+    Settings::shared->setValue("FullScreen", isFullScreen());
     if (!isFullScreen()) {
-        Settings::settings()->setValue("position", pos());
-        Settings::settings()->setValue("size", size());
+        Settings::shared->setValue("Position", pos());
+        Settings::shared->setValue("Size", size());
     }
-    Settings::settings()->endGroup();
-    int status = Settings::settings()->status();
-    if (0 != status) {
-        qDebug() << Settings::settings()->status();
-    }
-
+    Settings::shared->endGroup();
+    ui->tableView->storePrintSettings();
     Super::closeEvent(event);
     qApp->quit();
 }
@@ -406,18 +402,22 @@ void MainWindow::setLabelSize(double) {
     QSize size_mm(ui->widthDoubleSpinBox->value(), ui->heightDoubleSpinBox->value());
     ui->tableView->setLabelSize_mm(size_mm);
 
-    Settings::settings()->beginGroup("labelSettings");
-    Settings::settings()->setValue("width", size_mm.width());
-    Settings::settings()->setValue("height", size_mm.height());
-    Settings::settings()->endGroup();
+    if (!Settings::shared->readOnly()) {
+        Settings::shared->beginGroup("Label");
+        Settings::shared->setValue("Width", size_mm.width());
+        Settings::shared->setValue("Height", size_mm.height());
+        Settings::shared->endGroup();
+    }
 }
 
 void MainWindow::setLabelFont(const QString &font) {
     ui->tableView->setLabelFont(font);
 
-    Settings::settings()->beginGroup("labelSettings");
-    Settings::settings()->setValue("font", font);
-    Settings::settings()->endGroup();
+    if (!Settings::shared->readOnly()) {
+        Settings::shared->beginGroup("Label");
+        Settings::shared->setValue("Font", font);
+        Settings::shared->endGroup();
+    }
 
 }
 
@@ -425,14 +425,26 @@ void MainWindow::setLabelFont(const QString &font) {
 void MainWindow::setFrameThickness(double thickness_mm) {
     ui->tableView->setFrameThickness(thickness_mm);
 
-    Settings::settings()->beginGroup("labelSettings");
-    Settings::settings()->setValue("frameThickness", thickness_mm);
-    Settings::settings()->endGroup();
+    if (!Settings::shared->readOnly()) {
+        Settings::shared->beginGroup("Label");
+        Settings::shared->setValue("FrameThickness", thickness_mm);
+        Settings::shared->endGroup();
+    }
 
 }
 
 void MainWindow::recentTriggered(QAction *action) {
     loadWithName(action->text());
 }
+
+void MainWindow::onAboutToShowMainMenu() {
+    //qDebug() << "onAboutToShowMainMenu";
+}
+
+/*
+void MainWindow::resizeEvent(QResizeEvent *event) {
+    Super::resizeEvent(event);
+}
+*/
 
 

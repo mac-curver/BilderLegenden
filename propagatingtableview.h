@@ -23,10 +23,18 @@ public:
     void setLabelSize_mm(const QSizeF &size_mm);
     void setFrameThickness(double thickness_mm);
 
+    void storePrintSettings();
+    void retrievePrintSettings();
+
+
+
     QSizeF labelSize_mm();
 
     QPageLayout getPageLayout();
     QRectF getPageRect();
+
+    void retrieveColumnWidths();
+    void storeColumnWidths();
 
 
 protected:
@@ -46,11 +54,18 @@ signals:
     void requestUpdate();
 
 
+
 private:
     ImageLegendsModel legendsModel;
     MultiLineDelegate *multiLineDelegate = NULL;
     CenteredDelegate *centerDelegate = NULL;
     CustomPrintPreview *printPreviewDialog = NULL;
+
+    QMap<RowType::ColumnType, int> columnWidthsMap;
+    QMap<RowType::ColumnType, int> defaultColumnWidthsMap;
+
+
+
 public:
     QrCodeWidget *codeWidget = NULL;
 

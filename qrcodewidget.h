@@ -29,7 +29,7 @@ public:
 
     QString generateFileName(const QString &name);
 
-    void setLandscapeOrientation(bool isLandscape);
+    //void setLandscapeOrientation(bool isLandscape);
 
 
     /// Returns a QByteArray of SVG code for an image depicting the given QR Code, with the given number

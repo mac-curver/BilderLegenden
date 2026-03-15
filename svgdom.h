@@ -31,7 +31,7 @@ public:
 
     void setImageLegends(ImageLegendsModel *modelPtr);
     int numberOfRows() const;
-    void plotSingleLabel(int line, const QPointF &offset);
+    void plotSingleLabel(const RowType &row, const QPointF &offset);
     bool printingFinished = false;
 
 
@@ -39,6 +39,8 @@ public:
 private:
     QDomElement makeCenteredTextAsText(const QString &text, int size_px, int yPosition);
     QDomElement makeCenteredTextAsPath(const QString &text, int size_px, int yPosition);
+    QDomElement createPrimitiveRect(const QPointF &offset, const QSizeF &size, double thickness);
+    QDomElement makeCuttingGrid(const QSizeF &pageSize_mm, const QString &color, double lineWidth);
 
 
 public:
@@ -53,20 +55,21 @@ public:
     QString labelFont = "Arial";
 
 private:
-    double border = 7.0;
+    double border_mm = 7.0;
     double titleYPosition = 16.0;
     double titleSize = 9.0;
     double descriptionYPosition = titleYPosition + 8.0;
+    double infoSize = 3.0;
     double descriptionSize = 5.0;
     double authorSize = 6.0;
-    double lineSpacingY = descriptionSize*1.2;
+    double lineHeightFactor = 1.2;
     double matrixCodeScale = 0.45;
 
 
 private:
     QDomElement root;
     ImageLegendsModel *modelPtr;
-
+    
 };
 
 #endif // SVGDOM_H

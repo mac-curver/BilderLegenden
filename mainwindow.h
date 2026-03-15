@@ -32,7 +32,6 @@ public:
     void setEditTriggers(QAbstractItemView::EditTriggers triggers);
 
 protected:
-    void showEvent(QShowEvent *event) override;
     void closeEvent(QCloseEvent *event) override;
 
 
@@ -51,7 +50,6 @@ public slots:
     void updateTableView();
     void printPreview();
     void printPdf();
-    //void printSvg();
     void exportSvg();
     void showAboutDialog();
     void showSettings();
@@ -59,6 +57,10 @@ public slots:
     void setLabelFont(const QString &font);
     void setFrameThickness(double thickness_mm);
     void recentTriggered(QAction* action);
+
+protected slots:
+    void onAboutToShowMainMenu();
+    //virtual void resizeEvent(QResizeEvent *event) override;
 
 private:
     void setStatus();

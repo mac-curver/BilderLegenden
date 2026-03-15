@@ -1,4 +1,5 @@
 #include "multilinedelegate.h"
+#include "customprintpreview.h"
 //#include "svgdisplay.h"
 
 MultiLineDelegate::MultiLineDelegate(QWidget *parent)

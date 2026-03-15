@@ -134,12 +134,12 @@
         <translation>Letztes Projekt</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="339"/>
+        <location filename="../mainwindow.cpp" line="340"/>
         <source>Get page number (1-99)</source>
         <translation>Eingabe der Seitennummer (1-99)</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="339"/>
+        <location filename="../mainwindow.cpp" line="340"/>
         <source>Page</source>
         <translation>Seite</translation>
     </message>
@@ -147,7 +147,7 @@
 <context>
     <name>PropagatingTableView</name>
     <message>
-        <location filename="../propagatingtableview.cpp" line="73"/>
+        <location filename="../propagatingtableview.cpp" line="88"/>
         <source>Print Legends</source>
         <translation>Legenden ausdrucken</translation>
     </message>
@@ -155,10 +155,9 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../mainwindow.cpp" line="110"/>
         <source>German</source>
         <translatorcomment>nur ein Test ohne Einfluss</translatorcomment>
-        <translation>Deutsch</translation>
+        <translation type="vanished">Deutsch</translation>
     </message>
 </context>
 <context>
@@ -169,58 +168,98 @@
         <translation>Einstelllungen</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.ui" line="60"/>
+        <location filename="../settingsdialog.ui" line="147"/>
         <source>Selected Clicked</source>
         <translation>Ausgewählte Zelle anklicken</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.ui" line="53"/>
+        <location filename="../settingsdialog.ui" line="171"/>
         <source>No Edit Triggers</source>
         <extracomment>0</extracomment>
         <translation>Kein Trigger zum Editieren</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.ui" line="91"/>
+        <location filename="../settingsdialog.ui" line="225"/>
+        <source>White on black (Inverse)</source>
+        <translation>Weiss auf schwarz (Invertiert)</translation>
+    </message>
+    <message>
+        <location filename="../settingsdialog.ui" line="88"/>
         <source>Edit Key Pressed</source>
         <translation>Drücken der Bearbeiten Taste</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.ui" line="67"/>
+        <location filename="../settingsdialog.ui" line="71"/>
+        <source>Plot cutting lines</source>
+        <translation>Schneidlinien einfügen</translation>
+    </message>
+    <message>
+        <location filename="../settingsdialog.ui" line="40"/>
+        <source>Centered</source>
+        <translation>Zentriert</translation>
+    </message>
+    <message>
+        <location filename="../settingsdialog.ui" line="215"/>
         <source>Current Changed</source>
         <translation>Aktuelle Änderung</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.ui" line="123"/>
+        <location filename="../settingsdialog.ui" line="191"/>
+        <source>Left Bound</source>
+        <translation>Linksbündig</translation>
+    </message>
+    <message>
+        <location filename="../settingsdialog.ui" line="140"/>
         <source>&lt;https://www.fotocommunity.de&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../settingsdialog.ui" line="43"/>
+        <location filename="../settingsdialog.ui" line="81"/>
+        <source>Right Bound</source>
+        <translation>Rechtsbündig</translation>
+    </message>
+    <message>
+        <location filename="../settingsdialog.ui" line="105"/>
+        <source>Table Edit</source>
+        <translation>Zellaktivierung</translation>
+    </message>
+    <message>
+        <location filename="../settingsdialog.ui" line="95"/>
+        <source>Show Photo parameters (EXIF, IPTC, ...)</source>
+        <translation>Fotoinformationen übernehmen (Exif, IPTC, ...)</translation>
+    </message>
+    <message>
+        <location filename="../settingsdialog.ui" line="184"/>
         <source>Default URL</source>
         <translation>Standard URL</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.ui" line="98"/>
+        <location filename="../settingsdialog.ui" line="154"/>
+        <source>Label Style</source>
+        <translation>Stil</translation>
+    </message>
+    <message>
+        <location filename="../settingsdialog.ui" line="198"/>
         <source>Double Clicked</source>
         <translation>Doppelklick</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.ui" line="84"/>
+        <location filename="../settingsdialog.ui" line="64"/>
         <source>All edit Triggers</source>
         <translation>Alle Auslöser triggern</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.ui" line="77"/>
+        <location filename="../settingsdialog.ui" line="161"/>
         <source>Any Key Pressed</source>
         <translation>Editieren durch beliebige Taste</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.ui" line="130"/>
+        <location filename="../settingsdialog.ui" line="205"/>
         <source>Preserve Character Spacing (Correct kerning)</source>
         <translation>Buchstabenabstände beibehalten (Kerning korrigieren)</translation>
     </message>
     <message>
-        <location filename="../settingsdialog.ui" line="140"/>
+        <location filename="../settingsdialog.ui" line="112"/>
         <source>Don&apos;t use native dialogs (otherwise translations may be missing)</source>
         <translation>Keine nativen Dialoge (sonst fehlen u.U. Übersetzungen)</translation>
     </message>

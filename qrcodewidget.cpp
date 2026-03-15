@@ -33,11 +33,13 @@ QString QrCodeWidget::generateFileName(const QString &name) {
     return picturesLocation + QLatin1String("/") + name;
 }
 
+/*
 void QrCodeWidget::setLandscapeOrientation(bool isLandscape) {
     QPageLayout::Orientation orientation = isLandscape ? QPageLayout::Landscape : QPageLayout::Portrait;
     printer->setPageOrientation(orientation);
     resizeContent();
 }
+*/
 
 void QrCodeWidget::setImageLegends(ImageLegendsModel *modelPtr) {
     svgDom.setImageLegends(modelPtr);
@@ -113,8 +115,6 @@ void QrCodeWidget::paintEvent(QPaintEvent *event) {
 void QrCodeWidget::print(QPrinter *printerPtr) {
     QPainter painter(printerPtr);
 
-    qDebug() << "QrCodeWidget::print" << "/wd ht" << width() << height();
-
     double dpiX  = printerPtr->logicalDpiX();
     //double dpiY  = printerPtr->logicalDpiY();
 
@@ -137,12 +137,39 @@ void QrCodeWidget::printPreview(QPrinter *printerPtr) {
     painter.begin(printerPtr);
     painter.save();
     painter.scale(1.0, 1.0);
+
+    //qDebug() << printerPtr->printerSelectionOption();
+    qDebug() << printerPtr->pageOrder();//QPrinter::FirstPageFirst, QPrinter::LastPageFirst
+    qDebug() << printerPtr->fromPage();
+    qDebug() << printerPtr->toPage();
+    qDebug() << printerPtr->printerState();
+    qDebug() << printerPtr->collateCopies();
+    qDebug() << printerPtr->paperSource();
+    qDebug() << printerPtr->printRange(); //QPrinter::AllPages, QPrinter::Selection, QPrinter::PageRange, QPrinter::CurrentPage
+
+    int fromPage = 0;
+    int toPage = 100;
+    QList<QPageRanges::Range> pageRange;
+    switch (printerPtr->printRange()) {
+    case QPrinter::AllPages:
+        break;
+    case QPrinter::Selection:
+        pageRange << printerPtr->pageRanges().toRangeList();
+        break;
+    case QPrinter::PageRange:
+        fromPage = printerPtr->fromPage()-1;
+        toPage = printerPtr->toPage();
+        break;
+    case QPrinter::CurrentPage:
+        break;
+    }
+
     //const QSizeF pageSize_mm = printerPtr->pageRect(QPrinter::Millimeter).size();
-    QSvgRenderer renderer(svgDom.onePageToSvg(0, paperSize_mm()));
+    QSvgRenderer renderer(svgDom.onePageToSvg(fromPage, paperSize_mm()));
     renderer.setAspectRatioMode(Qt::KeepAspectRatio);
     renderer.render(&painter);
 
-    for (int page = 1; page < 100; ++page) {
+    for (int page = 1; page < toPage; ++page) {
         if (svgDom.printingFinished) break;
         printer->newPage();
         QSvgRenderer renderer(svgDom.onePageToSvg(page, paperSize_mm()));
@@ -156,7 +183,7 @@ void QrCodeWidget::printPreview(QPrinter *printerPtr) {
 
 
 void QrCodeWidget::finished(int value) {
-    qDebug() << "QrCodeWidget::finished" << value;
+    //qDebug() << "QrCodeWidget::finished" << value;
 }
 
 QByteArray QrCodeWidget::svg(int pageNumberPlusOne) {

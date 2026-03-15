@@ -1,6 +1,7 @@
 #ifndef CUSTOMPRINTPREVIEW_H
 #define CUSTOMPRINTPREVIEW_H
 
+#include <QPageLayout>
 #include <QPrintPreviewDialog>
 
 class CustomPrintPreview: public QPrintPreviewDialog {
@@ -17,7 +18,17 @@ public:
 
     void updatePreview();
 
+    void storeSettings();
+    void retrieveSettings();
 
+protected:
+    void closeEvent(QCloseEvent *) override;
+
+protected slots:
+
+
+private:
+    QAction *findOrientationAction(const QString &iconName);
 
 };
 

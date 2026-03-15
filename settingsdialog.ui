@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>518</width>
-    <height>361</height>
+    <width>521</width>
+    <height>335</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -28,78 +28,95 @@
    </property>
    <item>
     <layout class="QGridLayout" name="gridLayout_2">
+     <property name="sizeConstraint">
+      <enum>QLayout::SizeConstraint::SetFixedSize</enum>
+     </property>
      <property name="topMargin">
       <number>10</number>
      </property>
-     <item row="7" column="0">
-      <widget class="QLabel" name="defaultLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
+     <item row="11" column="2">
+      <widget class="QRadioButton" name="centeredRadioButton">
        <property name="text">
-        <string>Default URL</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QCheckBox" name="noEditCheckBox">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string extracomment="0">No Edit Triggers</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QCheckBox" name="selectedClickedCheckBox">
-       <property name="text">
-        <string>Selected Clicked</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QCheckBox" name="currentChangedCheckBox">
-       <property name="text">
-        <string>Current Changed</string>
+        <string>Centered</string>
        </property>
        <property name="checked">
         <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="5" column="1">
-      <widget class="QCheckBox" name="anyKeyCheckBox">
-       <property name="text">
-        <string>Any Key Pressed</string>
+     <item row="3" column="0" colspan="4">
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
        </property>
       </widget>
      </item>
-     <item row="6" column="1">
+     <item row="5" column="0" colspan="4">
+      <widget class="Line" name="line_2">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="3">
       <widget class="QCheckBox" name="allEditCheckBox">
        <property name="text">
         <string>All edit Triggers</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
+     <item row="9" column="1" colspan="3">
+      <widget class="QCheckBox" name="plotCuttingCheckBox">
+       <property name="text">
+        <string>Plot cutting lines</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="3">
+      <widget class="QRadioButton" name="rightRadioButton">
+       <property name="text">
+        <string>Right Bound</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
       <widget class="QCheckBox" name="editKeyCheckBox">
        <property name="text">
         <string>Edit Key Pressed</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QCheckBox" name="doubleClickedCheckBox">
+     <item row="8" column="1" colspan="3">
+      <widget class="QCheckBox" name="showParametersCheckBox">
        <property name="text">
-        <string>Double Clicked</string>
+        <string>Show Photo parameters (EXIF, IPTC, ...)</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Table Edit</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1" colspan="3">
+      <widget class="QCheckBox" name="dontUseNativeDialogsCheckBox">
+       <property name="text">
+        <string>Don't use native dialogs (otherwise translations may be missing)</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" colspan="3">
       <widget class="QLineEdit" name="defaultUrlLineEdit">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -124,7 +141,65 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="1">
+     <item row="1" column="1">
+      <widget class="QCheckBox" name="selectedClickedCheckBox">
+       <property name="text">
+        <string>Selected Clicked</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Label Style</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QCheckBox" name="anyKeyCheckBox">
+       <property name="text">
+        <string>Any Key Pressed</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="noEditCheckBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string extracomment="0">No Edit Triggers</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="defaultLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Default URL</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="1">
+      <widget class="QRadioButton" name="leftRadioButton">
+       <property name="text">
+        <string>Left Bound</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QCheckBox" name="doubleClickedCheckBox">
+       <property name="text">
+        <string>Double Clicked</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1" colspan="3">
       <widget class="QCheckBox" name="preserveCharacterSpacingCheckBox">
        <property name="text">
         <string>Preserve Character Spacing (Correct kerning)</string>
@@ -134,13 +209,23 @@
        </property>
       </widget>
      </item>
-     <item row="9" column="1">
-      <widget class="QCheckBox" name="dontUseNativeDialogsCheckBox">
+     <item row="0" column="2">
+      <widget class="QCheckBox" name="currentChangedCheckBox">
        <property name="text">
-        <string>Don't use native dialogs (otherwise translations may be missing)</string>
+        <string>Current Changed</string>
        </property>
        <property name="checked">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="1" colspan="3">
+      <widget class="QCheckBox" name="whiteOnBlackCheckBox">
+       <property name="text">
+        <string>White on black (Inverse)</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -336,6 +421,102 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>showParametersCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>changeAddInfo(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>301</x>
+     <y>294</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>170</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>leftRadioButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>leftAlign()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>158</x>
+     <y>318</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>170</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>centeredRadioButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>centerAlign()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>297</x>
+     <y>318</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>170</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rightRadioButton</sender>
+   <signal>clicked()</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>rightAlign()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>435</x>
+     <y>318</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>170</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>plotCuttingCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>changeCuttingLines(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>301</x>
+     <y>317</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>181</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>whiteOnBlackCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>changeWhiteOnBlack(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>301</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>260</x>
+     <y>167</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>editTriggerChanged(bool)</slot>
@@ -343,5 +524,11 @@
   <slot>allEditTriggers(bool)</slot>
   <slot>changePreserveCharacterSpacing(bool)</slot>
   <slot>changeUseNativeDialogs(bool)</slot>
+  <slot>changeAddInfo(bool)</slot>
+  <slot>leftAlign()</slot>
+  <slot>centerAlign()</slot>
+  <slot>rightAlign()</slot>
+  <slot>changeCuttingLines(bool)</slot>
+  <slot>changeWhiteOnBlack(bool)</slot>
  </slots>
 </ui>

@@ -3,7 +3,7 @@ QT       += core gui widgets svg svgwidgets xml printsupport
 
 CONFIG += c++17
 
-VERSION   = 3.01.03
+VERSION   = 3.01.04
 
 # Avoid file mess, but don't move the rcc dir as otherwise translation fails
 MOC_DIR = ../build/moc
@@ -51,6 +51,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     multilinedelegate.cpp \
+#    printpreviewdialog.cpp \
     propagatingtableview.cpp \
     qrcodewidget.cpp \
     rowtype.cpp \
@@ -74,6 +75,7 @@ HEADERS += \
     legendsdom.h \
     mainwindow.h \
     multilinedelegate.h \
+#   printpreviewdialog.h \
     propagatingtableview.h \
     qrcodewidget.h \
     rowtype.h \
@@ -91,6 +93,7 @@ INCLUDEPATH += \
 FORMS += \
     aboutdialog.ui \
     mainwindow.ui \
+#    printpreviewdialog.ui \
     settingsdialog.ui \
 #    svgmaindisplay.ui
 
@@ -113,6 +116,7 @@ DISTFILES += \
     Images/BilderLegendenIcon.icns \
     Images/BilderLegendenIcon.ico \
     Info.plist \
+    README.md \
     Windeploy.bat
 
 # lupdate BilderLegenden.pro see Tools !

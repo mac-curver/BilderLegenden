@@ -3,5 +3,7 @@
         <file>Images/Landscape.svg</file>
         <file>Images/Portrait.svg</file>
         <file>Images/HeicIcon.svg</file>
+        <file>Images/BilderLegendenIcon.icns</file>
+        <file>Images/BilderLegendenIcon.ico</file>
     </qresource>
 </RCC>

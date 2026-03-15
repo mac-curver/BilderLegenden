@@ -3,6 +3,7 @@
 #include <QString>
 #include "mainwindow.h"
 #include "settings.h"
+#include "propagatingtableview.h"
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
 
@@ -28,19 +29,32 @@ void SettingsDialog::awake() {
     ui->defaultUrlLineEdit->setText(Settings::shared->defaultUrl());
     ui->preserveCharacterSpacingCheckBox->setChecked(Settings::shared->preserveCharacterSpacing());
     ui->dontUseNativeDialogsCheckBox->setChecked(Settings::shared->dontUseNativeDialog());
+    ui->showParametersCheckBox->setChecked(Settings::shared->addPhotoInfo());
+    ui->plotCuttingCheckBox->setChecked(Settings::shared->addCuttingLine());
+    ui->whiteOnBlackCheckBox->setChecked(Settings::shared->whiteOnBlack());
+    switch (Settings::shared->labelAlignment()) {
+    case Qt::AlignRight:
+        ui->rightRadioButton->setChecked(true);
+        break;
+    case Qt::AlignLeft:
+        ui->leftRadioButton->setChecked(true);
+        break;
+    default:
+        ui->leftRadioButton->setChecked(true);
+    }
     show();
 }
 
-void SettingsDialog::retrieveEditTriggers() {
+void SettingsDialog::retrieveEditTriggers(PropagatingTableView *tv) {
 
-    Settings::settings()->beginGroup("Settings");
+    tableView = tv;
+    Settings::shared->beginGroup("Settings");
 
-    int editTrigger = Settings::settings()->value("EditTriggers", QAbstractItemView::CurrentChanged).toInt();
-    static_cast<MainWindow *>(parent())->setEditTriggers(QAbstractItemView::EditTriggers(editTrigger));
+    int editTrigger = Settings::shared->value("EditTriggers", QAbstractItemView::CurrentChanged).toInt();
+    tableView->setEditTriggers(QAbstractItemView::EditTriggers(editTrigger));
 
     foreach (QCheckBox *checkbox, triggers.keys()) {
         bool checked = editTrigger & triggers[checkbox];
-        qDebug() << editTrigger << checkbox->text() << triggers[checkbox] << checked;
         checkbox->setChecked(checked);
     }
 
@@ -65,29 +79,32 @@ void SettingsDialog::retrieveEditTriggers() {
         break;
     }
 
-
-    Settings::settings()->endGroup();
+    Settings::shared->endGroup();
 }
 
 void SettingsDialog::storeEditTriggers() {
-    Settings::settings()->beginGroup("Settings");
+    Settings::shared->beginGroup("Settings");
 
     QAbstractItemView::EditTriggers any = getCurrentCheckBoxes();
-    Settings::settings()->setValue("EditTriggers", any.toInt());
+    Settings::shared->setValue("EditTriggers", any.toInt());
     static_cast<MainWindow *>(parent())->setEditTriggers(any);
 
-    Settings::settings()->endGroup();
+    Settings::shared->endGroup();
+}
+
+void SettingsDialog::updatePreview() {
+    if (tableView) {
+        tableView->updatePreview();
+    }
 }
 
 
 
 QAbstractItemView::EditTriggers SettingsDialog::getCurrentCheckBoxes() {
     QAbstractItemView::EditTriggers any = QAbstractItemView::NoEditTriggers;
-    foreach (QCheckBox *checkbox, triggers.keys()) {
-        if (ui->noEditCheckBox != checkbox) {
-            if (checkbox->isChecked()) {
-                any |= triggers[checkbox];
-            }
+    foreach (QCheckBox *checkbox, triggers.keys() ) {
+        if (checkbox->isChecked()) {
+            any |= triggers[checkbox];
         }
     }
     switch (any) {
@@ -121,9 +138,8 @@ void SettingsDialog::editTriggerChanged(bool on) {
 
 
 void SettingsDialog::noEditTrigger(bool on) {
-    QList<QCheckBox *> checkboxes = findChildren<QCheckBox *>();
     if (on) {
-        foreach (QCheckBox *checkbox, checkboxes) {
+        foreach (QCheckBox *checkbox, triggers.keys()) {
             if (ui->noEditCheckBox != checkbox) {
                 checkbox->setChecked(false);
             }
@@ -134,9 +150,8 @@ void SettingsDialog::noEditTrigger(bool on) {
 
 void SettingsDialog::allEditTriggers(bool on) {
 
-    QList<QCheckBox *> checkboxes = findChildren<QCheckBox *>();
     if (on) {
-        foreach (QCheckBox *checkbox, checkboxes) {
+        foreach (QCheckBox *checkbox, triggers.keys()) {
             if (ui->noEditCheckBox != checkbox) {
                 checkbox->setChecked(true);
             }
@@ -148,14 +163,46 @@ void SettingsDialog::allEditTriggers(bool on) {
 
 void SettingsDialog::changePreserveCharacterSpacing(bool on) {
     Settings::shared->setPreseveCharacterSpacing(on);
+    updatePreview();
 }
 
 void SettingsDialog::changeUseNativeDialogs(bool on) {
     Settings::shared->setDontUseNativeDialog(on);
 }
 
+void SettingsDialog::changeAddInfo(bool on) {
+    Settings::shared->setAddPhotoInfo(on);
+    updatePreview();
+}
+
+void SettingsDialog::changeCuttingLines(bool plotThem) {
+    Settings::shared->setAddCuttingLine(plotThem);
+    updatePreview();
+}
+
+void SettingsDialog::changeWhiteOnBlack(bool inverse) {
+    Settings::shared->setWhiteOnBack(inverse);
+    updatePreview();
+}
+
+void SettingsDialog::leftAlign() {
+    Settings::shared->setLabelAlignment(Qt::AlignLeft);
+    updatePreview();
+}
+
+void SettingsDialog::centerAlign() {
+    Settings::shared->setLabelAlignment(Qt::AlignHCenter);
+    updatePreview();
+}
+
+void SettingsDialog::rightAlign() {
+    Settings::shared->setLabelAlignment(Qt::AlignRight);
+    updatePreview();
+}
+
 void SettingsDialog::accept() {
     close();
+    updatePreview();
 }
 
 

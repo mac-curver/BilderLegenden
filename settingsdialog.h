@@ -5,6 +5,7 @@
 #include <QMap>
 #include <QAbstractItemView>
 #include <QCheckBox>
+#include "propagatingtableview.h"
 
 namespace Ui {
 class SettingsDialog;
@@ -21,13 +22,14 @@ public:
 
     void awake();
 
-    void retrieveEditTriggers();
+    void retrieveEditTriggers(PropagatingTableView *tv);
     QString defaultUrl();
     
 
 private:
     QAbstractItemView::EditTriggers getCurrentCheckBoxes();
     void storeEditTriggers();
+    void updatePreview();
 
 
 public slots:
@@ -36,6 +38,15 @@ public slots:
     void allEditTriggers(bool on);
     void changePreserveCharacterSpacing(bool on);
     void changeUseNativeDialogs(bool on);
+
+    void changeAddInfo(bool on);
+    void changeCuttingLines(bool plotThem);
+    void changeWhiteOnBlack(bool inverse);
+
+
+    void leftAlign();
+    void centerAlign();
+    void rightAlign();
 
 
 protected:
@@ -47,6 +58,7 @@ public:
 
 private:
     QMap<QCheckBox *, QAbstractItemView::EditTriggers> triggers;
+    PropagatingTableView *tableView = NULL;
     Ui::SettingsDialog *ui;
 };
 

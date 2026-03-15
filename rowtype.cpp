@@ -2,6 +2,8 @@
 #include "rowtype.h"
 
 
+
+
 const QVariant RowType::columnData(int column) const {
     switch (static_cast<ColumnType>(column)) {
     case Image:
@@ -49,7 +51,7 @@ void RowType::setColumnData(int column, const QVariant &text) {
     case Image:
         if (text.toString() != imageLink) {
             imageLink = text.toString();
-            pixMap = createPixmap();
+            pixMap = getPixmap();
         }
         break;
     case Title:
@@ -79,7 +81,7 @@ void RowType::setColumnData(int column, const QVariant &text) {
 
 }
 
-QPixmap RowType::createPixmap() const  {
+QPixmap RowType::getPixmap() const  {
     QPixmap original = QPixmap(imageLink);
     if (original.isNull()) {
         return QPixmap();

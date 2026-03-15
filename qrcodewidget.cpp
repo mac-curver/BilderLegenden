@@ -138,7 +138,7 @@ void QrCodeWidget::printPreview(QPrinter *printerPtr) {
     painter.save();
     painter.scale(1.0, 1.0);
 
-    //qDebug() << printerPtr->printerSelectionOption();
+    qDebug() << (isPrinter ? "Output to printer" : "Just display ");
     qDebug() << printerPtr->pageOrder();//QPrinter::FirstPageFirst, QPrinter::LastPageFirst
     qDebug() << printerPtr->fromPage();
     qDebug() << printerPtr->toPage();
@@ -146,25 +146,42 @@ void QrCodeWidget::printPreview(QPrinter *printerPtr) {
     qDebug() << printerPtr->collateCopies();
     qDebug() << printerPtr->paperSource();
     qDebug() << printerPtr->printRange(); //QPrinter::AllPages, QPrinter::Selection, QPrinter::PageRange, QPrinter::CurrentPage
+    qDebug() << printerPtr->pageRanges();
 
-    int fromPage = 0;
-    int toPage = 100;
-    QList<QPageRanges::Range> pageRange;
+    QPageRanges pageRanges = printerPtr->pageRanges();
+    QList<QPageRanges::Range> rangeList = QList(pageRanges.toRangeList());
+    QPageRanges::Range allPages;
+    allPages.from = 1;
+    allPages.to = 100;
+
     switch (printerPtr->printRange()) {
     case QPrinter::AllPages:
+        rangeList.append(allPages);
         break;
     case QPrinter::Selection:
-        pageRange << printerPtr->pageRanges().toRangeList();
         break;
     case QPrinter::PageRange:
-        fromPage = printerPtr->fromPage()-1;
-        toPage = printerPtr->toPage();
         break;
     case QPrinter::CurrentPage:
         break;
     }
+    bool addNewPage = false;
+    for (qsizetype i = 0; i < rangeList.size(); ++i) {
+        const QPageRanges::Range &item = rangeList.at(i);
+        for (int page = item.from; page < item.to + 1; ++page) {
+            if (svgDom.printingFinished) break;
+            if (addNewPage) {
+                printer->newPage();
+            }
+            QSvgRenderer renderer(svgDom.onePageToSvg(page-1, paperSize_mm()));
+            renderer.setAspectRatioMode(Qt::KeepAspectRatio);
+            renderer.render(&painter);
+            addNewPage = true;
+        }
+    }
 
-    //const QSizeF pageSize_mm = printerPtr->pageRect(QPrinter::Millimeter).size();
+    /*
+    // This basically works for a single page range!
     QSvgRenderer renderer(svgDom.onePageToSvg(fromPage, paperSize_mm()));
     renderer.setAspectRatioMode(Qt::KeepAspectRatio);
     renderer.render(&painter);
@@ -176,6 +193,7 @@ void QrCodeWidget::printPreview(QPrinter *printerPtr) {
         renderer.setAspectRatioMode(Qt::KeepAspectRatio);
         renderer.render(&painter);
     }
+    */
     painter.restore();
     painter.end();
 

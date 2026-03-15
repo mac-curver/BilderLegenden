@@ -1,5 +1,6 @@
 #include "multilinedelegate.h"
-#include "customprintpreview.h"
+#include "propagatingtableview.h"
+
 //#include "svgdisplay.h"
 
 MultiLineDelegate::MultiLineDelegate(QWidget *parent)
@@ -22,13 +23,13 @@ void MultiLineDelegate::setEditorData(QWidget *editor, const QModelIndex &index)
 void MultiLineDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const {
     QPlainTextEdit *mEditor = qobject_cast<QPlainTextEdit *>(editor);
     model->setData(index, mEditor->toPlainText());
-    if (printPreviewDialog) {
-        printPreviewDialog->updatePreview();
+    if (tableView) {
+        tableView->updatePreview();
     }
 }
 
 
-void MultiLineDelegate::setPreviewDialog(CustomPrintPreview *dlg) {
-    printPreviewDialog = dlg;
+void MultiLineDelegate::setTableView(PropagatingTableView *view) {
+    tableView = view;
 }
 

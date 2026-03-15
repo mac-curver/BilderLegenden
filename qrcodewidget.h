@@ -68,6 +68,7 @@ protected:
 public:
     SvgDom svgDom;
     int _pageNumber = 1;
+    bool isPrinter = true;
 
 private:
     const double defaultFactor = 3.0;

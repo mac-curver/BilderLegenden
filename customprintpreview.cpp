@@ -43,6 +43,7 @@ CustomPrintPreview::CustomPrintPreview(QPrinter *printer, QWidget *parent, Qt::W
     if (portraitIndex >= 0 && landscapeIndex >= 0) {
         QList<QAction *> actions = findChildren<QAction*>();
 
+        /// Re-invent the in Qt 6 canceled object names (might fail?!)
         actions[portraitIndex]->setObjectName("Portrait");
         actions[landscapeIndex]->setObjectName("Landscape");
     }

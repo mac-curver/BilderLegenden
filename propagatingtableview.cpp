@@ -68,22 +68,24 @@ void PropagatingTableView::setColumnWidths() {
     }
 }
 
-void PropagatingTableView::setPreviewDialog(CustomPrintPreview *dlg) {
-    printPreviewDialog = dlg;
-    multiLineDelegate->setPreviewDialog(dlg);
-}
 
 void PropagatingTableView::updatePreview() {
-    if (printPreviewDialog) {
+    if (codeWidget && printPreviewDialog) {
+        codeWidget->isPrinter = false;
         printPreviewDialog->updatePreview();
+        codeWidget->isPrinter = true;
     }
 }
 
 
 void PropagatingTableView::showPrintPreview(bool showIt) {
-    printPreviewDialog->setVisible(showIt);
+    //QPageLayout layoutWithLandScape;
+    //layoutWithLandScape.setOrientation(QPageLayout::Landscape);
+    //codeWidget->printer->setPageLayout(layoutWithLandScape);
 
     if (showIt) {
+        codeWidget->isPrinter = false;
+        printPreviewDialog->setVisible(true);
         printPreviewDialog->raise();
         printPreviewDialog->setWindowTitle(tr("Print Legends"));
         switch (printPreviewDialog->exec()) {
@@ -93,6 +95,10 @@ void PropagatingTableView::showPrintPreview(bool showIt) {
         default:
             return;
         }
+        codeWidget->isPrinter = true;
+    }
+    else {
+        printPreviewDialog->setVisible(false);
     }
 }
 

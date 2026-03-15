@@ -3,8 +3,9 @@
 
 #include <QStyledItemDelegate>
 #include <QPlainTextEdit>
-#include "customprintpreview.h"
-//#include "printpreviewdialog.h"
+
+
+class PropagatingTableView;
 
 class MultiLineDelegate : public QStyledItemDelegate {
     Q_OBJECT
@@ -17,10 +18,10 @@ public:
     virtual void setEditorData(QWidget *editor, const QModelIndex &index) const;
     virtual void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
 
-    virtual void setPreviewDialog(CustomPrintPreview *dlg);
+    virtual void setTableView(PropagatingTableView *tableView);
 
 private:
-    CustomPrintPreview *printPreviewDialog = NULL;
+    PropagatingTableView *tableView = NULL;
 
 };
 

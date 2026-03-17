@@ -104,6 +104,12 @@ void Settings::storePageLayout(QPrinter *printer) {
 
     setValue("Orientation", layout.orientation());
     setValue("PageSize", layout.pageSize().id());
+    setValue("FullRect", layout.fullRect());
+    setValue("Margins.Bottom", layout.margins().bottom());
+    setValue("Margins.Top", layout.margins().top());
+    setValue("Margins.Left", layout.margins().left());
+    setValue("Margins.Right", layout.margins().right());
+    //setValue("Mode", layout.mode());
 
     endGroup();
 }
@@ -117,6 +123,8 @@ void Settings::retrievePageLayout(QPrinter *printer) {
     int idAsInt =  value("PageSize", QPageSize::A4).toInt();
     QPageSize::PageSizeId id = static_cast<QPageSize::PageSizeId>(idAsInt);
     printer->setPageSize(QPageSize(id));
+    //bool isFullPage = value("Mode").toBool();
+    //printer->setFullPage(isFullPage);
 
     endGroup();
 }

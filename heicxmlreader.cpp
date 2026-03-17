@@ -32,7 +32,6 @@ HeicXmlReader::HeicXmlReader(const QByteArray &ba) {
 
         qsizetype length = end-start;
         QByteArray xmlAsBa = ba.sliced(start, length);
-        //qDebug() << "HeicXmlReader::" << QString(xmlAsBa);
         QDomDocument xml;
         xml.setContent(xmlAsBa);
 
@@ -52,7 +51,6 @@ void HeicXmlReader::extractElements(const QDomNode &node, AttributesMap &result)
             QString text = elem.text().trimmed();
             if (!text.isEmpty()) {
                 result[elem.tagName()] = text;
-                //qDebug() << "HeicXmlReader::extractElements" << "Key/Value" << elem.tagName() << text;
             }
             // --- Extract attributes ---
             QDomNamedNodeMap attrs = elem.attributes();
@@ -61,7 +59,6 @@ void HeicXmlReader::extractElements(const QDomNode &node, AttributesMap &result)
                 if (!attr.value().isEmpty()) {
                     QString key = elem.tagName() + "@" + attr.name();
                     result[key] = attr.value();
-                    //qDebug() << "HeicXmlReader::extractElements" << "Attr/Value" << key << attr.value();
                 }
             }
             // Recurse into children

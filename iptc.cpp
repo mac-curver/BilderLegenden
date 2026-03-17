@@ -46,7 +46,6 @@ void IPTC::parseIptcFromUChar(const unsigned char *buffer, unsigned int length) 
         if (!IPTC_ENTRY_TYPES.count(blockType)) {
             continue;
         }
-        //qDebug() << "IPTC::parseIptcFromUChar" << blockType << pos << dataPos << blockSize;
         if (blockType < lastBlockType) break;
         lastBlockType = blockType;
 
@@ -63,7 +62,6 @@ void IPTC::parseIptcFromUChar(const unsigned char *buffer, unsigned int length) 
 
         map[key] = value;
     }
-    //qDebug() << "IPTC::parseIptcFromUChar" << count;
 
 }
 

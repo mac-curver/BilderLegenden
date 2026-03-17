@@ -6,11 +6,11 @@ void Settings::beginGroup(const QString &key) {
 
     Q_ASSERT(key.front().isUpper());
     settingsPtr->beginGroup(key);
-    qDebug() << "+" << settingsPtr->group();
+    //qDebug() << "+" << settingsPtr->group();
 }
 
 void Settings::endGroup() {
-    qDebug() << "-" << settingsPtr->group();
+    //qDebug() << "-" << settingsPtr->group();
     settingsPtr->endGroup();
 }
 
@@ -26,13 +26,13 @@ bool Settings::blocked() {
 
 QVariant Settings::value(const QString &key, QVariant defaultValue) {
     Q_ASSERT(key.front().isUpper());
-    qDebug() << " " << key << "=" << settingsPtr->value(key, defaultValue);
+    //qDebug() << " " << key << "=" << settingsPtr->value(key, defaultValue);
     return settingsPtr->value(key, defaultValue);
 }
 
 void Settings::setValue(const QString &key, QVariant newValue) {
     //if (!blocked()) {
-    qDebug() << " " << key << ":" << newValue;
+    //qDebug() << " " << key << ":" << newValue;
     settingsPtr->setValue(key, newValue);
     //}
 }
@@ -98,7 +98,6 @@ Qt::Alignment Settings::labelAlignment() {
 }
 
 void Settings::storePageLayout(QPrinter *printer) {
-    /*
     beginGroup("Print");
 
     QPageLayout layout = printer->pageLayout();
@@ -107,23 +106,19 @@ void Settings::storePageLayout(QPrinter *printer) {
     setValue("PageSize", layout.pageSize().id());
 
     endGroup();
-    */
 }
 
 void Settings::retrievePageLayout(QPrinter *printer) {
     beginGroup("Print");
 
-    QPageLayout pageLayout = printer->pageLayout();
-    int asInt = value("Orientation", pageLayout.orientation()).toInt();
+    int asInt = value("Orientation", printer->pageLayout().orientation()).toInt();
     QPageLayout::Orientation orientation = static_cast<QPageLayout::Orientation>(asInt);
-    pageLayout.setOrientation(orientation);
+    printer->setPageOrientation(orientation);
     int idAsInt =  value("PageSize", QPageSize::A4).toInt();
     QPageSize::PageSizeId id = static_cast<QPageSize::PageSizeId>(idAsInt);
-    pageLayout.setPageSize(QPageSize(id));
+    printer->setPageSize(QPageSize(id));
 
     endGroup();
-
-    printer->setPageLayout(pageLayout);
 }
 
 
@@ -196,7 +191,6 @@ void Settings::store() {
     beginGroup("Plot");
     setValue("CuttingLines", _addPlottingLines);
     endGroup();
-
 
 }
 

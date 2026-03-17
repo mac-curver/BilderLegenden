@@ -4,6 +4,8 @@
 #include <QPageLayout>
 #include <QPrintPreviewDialog>
 
+class QPrintPreviewWidget;
+
 class CustomPrintPreview: public QPrintPreviewDialog {
     typedef QPrintPreviewDialog Super;
     Q_OBJECT
@@ -22,13 +24,14 @@ public:
     void retrieveSettings();
 
 protected:
-    void closeEvent(QCloseEvent *) override;
 
 protected slots:
-
+    void zoom(const QString &zoomAsText);
 
 private:
     QAction *findOrientationAction(const QString &iconName);
+    QPrintPreviewWidget *preview = NULL;
+
 
 };
 

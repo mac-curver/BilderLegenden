@@ -70,7 +70,6 @@ QSizeF SvgDom::plotSize(const QSizeF &pageSize_mm) const {
 }
 
 int SvgDom::number_width(const QSizeF &pageSize_mm) const {
-    //qDebug() << "SvgDom::number_width" << pageSize_mm.width() << labelWidth_mm << (pageSize_mm.width() - 2*pageMargin) / labelWidth_mm;
     return (pageSize_mm.width() - 2*pageMargin) / labelWidth_mm;
 }
 

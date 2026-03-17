@@ -37,7 +37,6 @@ const RowType LegendsDom::retrieveLine(const QDomNode &line) const {
     for (int j = 0; j < lineElements.count(); j++) {
         QDomNode n = lineElements.item(j);
         QDomElement e = n.toElement();
-        //qDebug() << e.tagName() << e.text();
         switch (enumValue.keyToValue(e.tagName().toStdString().c_str())) {
         case RowType::Image:
             image = e.text();
@@ -60,7 +59,6 @@ const RowType LegendsDom::retrieveLine(const QDomNode &line) const {
         }
     }
 
-    // qDebug() << title << descriptions << camera << author << url;
     return RowType(
                     image,
                     title,

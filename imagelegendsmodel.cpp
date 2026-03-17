@@ -176,7 +176,6 @@ void ImageLegendsModel::appendUrls(const QList<QUrl> &urls) {
     foreach (QUrl url, urls) {
         appendUrl(url);
     }
-    // qDebug() << lineNumber << dataRows.count();
     endInsertRows();
 }
 
@@ -212,7 +211,6 @@ void ImageLegendsModel::saveFile(const QString &fileName) {
 }
 
 void ImageLegendsModel::loadFile(const QString &fileName) {
-    //qDebug() << "ImageLegendsModel::loadFile" << fileName;
     QFile file(fileName);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         layoutAboutToBeChanged();
@@ -226,7 +224,6 @@ void ImageLegendsModel::loadFile(const QString &fileName) {
 
         QDomNode legends = docElem.firstChild();
         QDomNodeList nodeList = docElem.elementsByTagName("line");
-        //qDebug() << "ImageLegendsModel::loadFile" << nodeList.count();
         dataRows.clear();
         for (int i = 0; i < nodeList.count(); i++ ) {
             QDomNode line = nodeList.item(i);
@@ -271,7 +268,6 @@ bool ImageLegendsModel::dropMimeData(const QMimeData *data, Qt::DropAction actio
                                      int row, int column, const QModelIndex &modelIndex
 ) {
     Q_UNUSED(column)
-    //qDebug() << "ImageLegendsModel::dropMimeData" << action << data->formats();
     if (action != Qt::IgnoreAction) {
 
         if (data->hasFormat("application/vnd.text.list")) {

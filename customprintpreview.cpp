@@ -1,6 +1,6 @@
 #include <QPrintPreviewWidget>
 #include <QPageLayout>
-#include <QActionGroup>
+#include <QComboBox>
 #include "settings.h"
 #include "customprintpreview.h"
 
@@ -10,6 +10,7 @@
 CustomPrintPreview::CustomPrintPreview(QPrinter *printer, QWidget *parent, Qt::WindowFlags flags):
     Super(printer, parent, flags)
 {
+    /*
     QPrintPreviewDialog *fakePreview = new QPrintPreviewDialog();
     QList<QAction *> allActions = fakePreview->findChildren<QAction*>();
 
@@ -47,7 +48,12 @@ CustomPrintPreview::CustomPrintPreview(QPrinter *printer, QWidget *parent, Qt::W
         actions[portraitIndex]->setObjectName("Portrait");
         actions[landscapeIndex]->setObjectName("Landscape");
     }
-    //QPrintPreviewWidget* preview = findChild<QPrintPreviewWidget*>();
+    */
+    preview = findChild<QPrintPreviewWidget*>();
+    /// Enable zoom on MAC
+    QList<QComboBox *> items = findChildren<QComboBox*>();
+    connect(items.front(), &QComboBox::currentTextChanged, this, &CustomPrintPreview::zoom);
+
     //connect(preview, &QPrintPreviewWidget::previewChanged, this, &CustomPrintPreview::widgetPreviewChanged);
     //connect(preview, &QPrintPreviewWidget::paintRequested, this, &CustomPrintPreview::widgetPaintRequested);
 
@@ -69,9 +75,6 @@ void CustomPrintPreview::accept() {
 //}
 
 void CustomPrintPreview::updatePreview() {
-    //QList<QPrintPreviewWidget*> list = findChildren<QPrintPreviewWidget*>();
-    //QPrintPreviewWidget* preview = list.first();
-    QPrintPreviewWidget* preview = findChild<QPrintPreviewWidget*>();
     if (preview) {
         preview->updatePreview();
     }
@@ -100,8 +103,21 @@ void CustomPrintPreview::retrieveSettings() {
 
 }
 
-void CustomPrintPreview::closeEvent(QCloseEvent *) {
-    QPageLayout layout = printer()->pageLayout();
-    //qDebug() << "closeEvent" << printer()->pageLayout() << layout.orientation();
+
+/// Added as at least on MAC zoom is not working
+/// zoom the contained widget according to the selected text
+/// The text is like: "45,5%"
+void CustomPrintPreview::zoom(const QString &zoomAsText) {
+    QString doubleAsText = zoomAsText;
+    doubleAsText.chop(1);                                              // delete the % sign
+    bool ok;
+    // convert to percent
+    double zoomPercent = doubleAsText.replace(",", ".").toDouble(&ok)/100;
+    if (ok) {
+        if (preview) {
+            preview->setZoomFactor(zoomPercent);
+        }
+    }
+
 }
 

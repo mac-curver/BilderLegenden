@@ -41,6 +41,7 @@ bool MainWindow::awake() {
 
     if (qApp->queryKeyboardModifiers() & Qt::ShiftModifier) {
         //qDebug() << "Shiftkey was down";
+        showNormal();
     }
     else {
         Settings::shared->beginGroup("Mainwindow");
@@ -200,7 +201,6 @@ void MainWindow::save() {
 }
 
 void MainWindow::load() {
-    qDebug() << "MainWindow::load()";
     QString fileName=QStandardPaths::standardLocations(QStandardPaths::HomeLocation).constFirst()+"/legends.xml";
     QFileDialog fileDialog(this);
     fileDialog.setOption(QFileDialog::DontUseNativeDialog, Settings::shared->dontUseNativeDialog());
@@ -270,7 +270,6 @@ void MainWindow::openPhoto(const QString &fileName) {
 
 
 void MainWindow::addPhoto() {
-    //qDebug() << "MainWindow::addPhoto()";
     QFileDialog fileDialog(this);
     fileDialog.setOption(QFileDialog::DontUseNativeDialog, Settings::shared->dontUseNativeDialog());
     fileDialog.setAcceptMode(QFileDialog::AcceptOpen);
@@ -319,7 +318,6 @@ void MainWindow::printPdf() {
         success = printer.setPageMargins(QMarginsF(12, 16, 12, 20), QPageLayout::Millimeter);
         Q_UNUSED(success)
         ui->tableView->codeWidget->render(&painter);
-        //qDebug() << success;
         break;
     default:
         break;

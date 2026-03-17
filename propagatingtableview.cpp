@@ -71,9 +71,9 @@ void PropagatingTableView::setColumnWidths() {
 
 void PropagatingTableView::updatePreview() {
     if (codeWidget && printPreviewDialog) {
-        codeWidget->isPrinter = false;
+        //codeWidget->isPrinter = false;
         printPreviewDialog->updatePreview();
-        codeWidget->isPrinter = true;
+        //codeWidget->isPrinter = true;
     }
 }
 
@@ -84,7 +84,7 @@ void PropagatingTableView::showPrintPreview(bool showIt) {
     //codeWidget->printer->setPageLayout(layoutWithLandScape);
 
     if (showIt) {
-        codeWidget->isPrinter = false;
+        //codeWidget->isPrinter = false;
         printPreviewDialog->setVisible(true);
         printPreviewDialog->raise();
         printPreviewDialog->setWindowTitle(tr("Print Legends"));
@@ -95,7 +95,7 @@ void PropagatingTableView::showPrintPreview(bool showIt) {
         default:
             return;
         }
-        codeWidget->isPrinter = true;
+        //codeWidget->isPrinter = true;
     }
     else {
         printPreviewDialog->setVisible(false);
@@ -167,7 +167,6 @@ void PropagatingTableView::retrieveColumnWidths() {
     for (int i = 0; i < RowType::N_ColumnTypes; i++) {
         RowType::ColumnType type = static_cast<RowType::ColumnType>(i);
         QString typeAsString = QVariant::fromValue(type).toString();
-        qDebug() << typeAsString;
         columnWidthsMap[type] = Settings::shared->value(typeAsString, columnWidthsMap[type]).toInt();
     }
 

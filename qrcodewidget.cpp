@@ -24,7 +24,6 @@ QrCodeWidget::QrCodeWidget(QWidget *parent)
 }
 
 QSizeF QrCodeWidget::paperSize_mm() const {
-    //qDebug() << "QrCodeWidget::paperSize_mm" << printer->paperRect(QPrinter::Millimeter).size();
     return printer->paperRect(QPrinter::Millimeter).size();
 }
 
@@ -138,6 +137,7 @@ void QrCodeWidget::printPreview(QPrinter *printerPtr) {
     painter.save();
     painter.scale(1.0, 1.0);
 
+    /*
     qDebug() << (isPrinter ? "Output to printer" : "Just display ");
     qDebug() << printerPtr->pageOrder();//QPrinter::FirstPageFirst, QPrinter::LastPageFirst
     qDebug() << printerPtr->fromPage();
@@ -147,6 +147,7 @@ void QrCodeWidget::printPreview(QPrinter *printerPtr) {
     qDebug() << printerPtr->paperSource();
     qDebug() << printerPtr->printRange(); //QPrinter::AllPages, QPrinter::Selection, QPrinter::PageRange, QPrinter::CurrentPage
     qDebug() << printerPtr->pageRanges();
+    */
 
     QPageRanges pageRanges = printerPtr->pageRanges();
     QList<QPageRanges::Range> rangeList = QList(pageRanges.toRangeList());

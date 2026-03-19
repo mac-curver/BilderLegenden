@@ -40,7 +40,8 @@ void SettingsDialog::awake() {
         ui->leftRadioButton->setChecked(true);
         break;
     default:
-        ui->leftRadioButton->setChecked(true);
+        ui->centeredRadioButton->setChecked(true);
+        break;
     }
     show();
 }

@@ -95,6 +95,7 @@ void QrCodeWidget::resizeContent() {
 }
 
 void QrCodeWidget::paintEvent(QPaintEvent *event) {
+    Q_ASSERT(false);
     Q_UNUSED(event)
     QPainter painter(this);
     painter.save();
@@ -112,6 +113,7 @@ void QrCodeWidget::paintEvent(QPaintEvent *event) {
 
 
 void QrCodeWidget::print(QPrinter *printerPtr) {
+    Q_ASSERT(false);
     QPainter painter(printerPtr);
 
     double dpiX  = printerPtr->logicalDpiX();
@@ -202,6 +204,7 @@ void QrCodeWidget::printPreview(QPrinter *printerPtr) {
 
 
 void QrCodeWidget::finished(int value) {
+    Q_UNUSED(value)
     //qDebug() << "QrCodeWidget::finished" << value;
 }
 

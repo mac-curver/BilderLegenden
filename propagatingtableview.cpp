@@ -40,6 +40,7 @@ PropagatingTableView::PropagatingTableView(QWidget *parent): QTableView(parent) 
 
     codeWidget->setImageLegends(static_cast<ImageLegendsModel*>(this->model()));
     connect(printPreviewDialog, &CustomPrintPreview::paintRequested, codeWidget, &QrCodeWidget::printPreview);
+    connect(printPreviewDialog, &CustomPrintPreview::finished, codeWidget, &QrCodeWidget::finished);
 
     defaultColumnWidthsMap = {
         {RowType::Image, 70},
@@ -70,7 +71,7 @@ void PropagatingTableView::setColumnWidths() {
 
 
 void PropagatingTableView::updatePreview() {
-    if (codeWidget && printPreviewDialog) {
+    if (codeWidget && printPreviewDialog && printPreviewDialog->isVisible()) {
         //codeWidget->isPrinter = false;
         printPreviewDialog->updatePreview();
         //codeWidget->isPrinter = true;

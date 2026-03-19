@@ -87,7 +87,7 @@ bool MainWindow::awake() {
     Settings::shared->endGroup();
 
     // Does not Work!? but for file menu it works ?!
-    connect(ui->menuBildLegenden, &QMenu::aboutToShow, this, &MainWindow::onAboutToShowMainMenu);
+    connect(ui->menuBilderLegenden, &QMenu::aboutToShow, this, &MainWindow::onAboutToShowMainMenu);
 
     setAcceptDrops(true);
 

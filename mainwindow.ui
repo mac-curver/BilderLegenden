@@ -340,7 +340,7 @@
    </property>
    <widget class="QMenu" name="menuBilderLegenden">
     <property name="title">
-     <string>General</string>
+     <string>BilderLegenden</string>
     </property>
     <addaction name="actionAbout"/>
     <addaction name="actionPreferences"/>

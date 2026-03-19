@@ -15,6 +15,7 @@
 *_pch.h.cpp
 *_resource.rc
 *.qm
+!dtbase_*.qm
 .#*
 *.*#
 core
@@ -80,3 +81,4 @@ CMakeLists.txt.user*
 .rcc/
 .uic/
 /build*/
+

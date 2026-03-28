@@ -37,11 +37,12 @@ public:
 
     void setImageLegends(ImageLegendsModel *modelPtr);
 
-    void print(QPrinter *printerPtr);
+    //void print(QPrinter *printerPtr);
     QSizeF labelSize_mm() const;
     void setLabelFont(const QString &font);
     void setLabelSize_mm(const QSizeF &size_mm);
     void setFrameThickness(double thickness);
+    void setOuterThickness(double thickness);
 
     void setPageNumber(int pageNumber);
     int pageNumber() const;
@@ -59,7 +60,7 @@ public slots:
 
 protected:
     QSize sizeHint() const override;
-    virtual void paintEvent(QPaintEvent *event) override;
+    //virtual void paintEvent(QPaintEvent *event) override;
     void resizeContent();
 
 

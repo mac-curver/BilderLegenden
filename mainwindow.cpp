@@ -18,7 +18,6 @@
 #include <QSaveFile>
 #include <QInputDialog>
 
-//#include "logfile.h"
 #include "settings.h"
 #include "propagatingtableview.h"
 #include "aboutdialog.h"
@@ -79,10 +78,12 @@ bool MainWindow::awake() {
 
     double width = Settings::shared->value("Width", ui->widthDoubleSpinBox->value()).toDouble();
     double height = Settings::shared->value("Height", ui->heightDoubleSpinBox->value()).toDouble();
-    double frameThickness = Settings::shared->value("FrameThickness", ui->frameDoubleSpinBox->value()).toDouble();
+    double innerFrameThickness = Settings::shared->value("FrameThickness", ui->innerFrameDoubleSpinBox->value()).toDouble();
+    double outerFrameThickness = Settings::shared->value("OuterThickness", ui->outerFrameDoubleSpinBox->value()).toDouble();
     ui->widthDoubleSpinBox->setValue(width);
     ui->heightDoubleSpinBox->setValue(height);
-    ui->frameDoubleSpinBox->setValue(frameThickness);
+    ui->innerFrameDoubleSpinBox->setValue(innerFrameThickness);
+    ui->outerFrameDoubleSpinBox->setValue(outerFrameThickness);
 
     Settings::shared->endGroup();
 
@@ -431,6 +432,16 @@ void MainWindow::setFrameThickness(double thickness_mm) {
 
 }
 
+void MainWindow::setOuterThickness(double thickness_mm) {
+    ui->tableView->setOuterThickness(thickness_mm);
+
+    if (!Settings::shared->readOnly()) {
+        Settings::shared->beginGroup("Label");
+        Settings::shared->setValue("OuterThickness", thickness_mm);
+        Settings::shared->endGroup();
+    }
+}
+
 void MainWindow::recentTriggered(QAction *action) {
     loadWithName(action->text());
 }
@@ -438,11 +449,4 @@ void MainWindow::recentTriggered(QAction *action) {
 void MainWindow::onAboutToShowMainMenu() {
     //qDebug() << "onAboutToShowMainMenu";
 }
-
-/*
-void MainWindow::resizeEvent(QResizeEvent *event) {
-    Super::resizeEvent(event);
-}
-*/
-
 

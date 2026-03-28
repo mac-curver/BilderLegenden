@@ -20,8 +20,13 @@ void SvgDom::plotSingleLabel(const RowType &row, const QPointF &offset) {
     transform.setAttribute("transform", QString("translate(%1 %2)").arg(offset.x()).arg(offset.y()));
     //transform.setAttribute("mask", "url(#Mask)"); // apply clipping
 
-    QDomElement rectElement = makeRect(QPointF(), QSizeF(labelWidth_mm, labelHeight_mm));
+
+    QDomElement rectElement = makeOuterRect(QPointF(), QSizeF(labelWidth_mm, labelHeight_mm));
     transform.appendChild(rectElement);
+
+    QDomElement innerElement = makeInnerRect(QPointF(), QSizeF(labelWidth_mm, labelHeight_mm));
+    transform.appendChild(innerElement);
+
 
     QDomElement titleElement = makeCenteredText(row.title, titleSize, titleYPosition);
     transform.appendChild(titleElement);
@@ -33,9 +38,11 @@ void SvgDom::plotSingleLabel(const RowType &row, const QPointF &offset) {
         vertical += infoSize*lineHeightFactor;
     }
     for (int i = 0; i < row.descriptions.count(); i++) {
-        QDomElement lineElement = makeCenteredText(row.descriptions.at(i), descriptionSize, vertical);
-        vertical += descriptionSize*lineHeightFactor;
-        transform.appendChild(lineElement);
+        if (!row.descriptions.at(i).isEmpty()) {
+            QDomElement lineElement = makeCenteredText(row.descriptions.at(i), descriptionSize, vertical);
+            vertical += descriptionSize*lineHeightFactor;
+            transform.appendChild(lineElement);
+        }
     }
     QDomElement authorElement = makeCenteredText(row.author, authorSize, labelHeight_mm-border_mm);
     transform.appendChild(authorElement);
@@ -49,6 +56,9 @@ void SvgDom::plotSingleLabel(const RowType &row, const QPointF &offset) {
         switch (Settings::shared->labelAlignment()) {
         case Qt::AlignRight:
             qrXPosition = border_mm;
+            break;
+        default:
+            break;
         }
 
         QPointF translation(qrXPosition, labelHeight_mm-matrixCodeScale*qr.getSize()-border_mm);
@@ -59,12 +69,11 @@ void SvgDom::plotSingleLabel(const RowType &row, const QPointF &offset) {
         translateTransform.appendChild(scaleTransform);
         transform.appendChild(translateTransform);
     }
-
     root.appendChild(transform);
 }
 
 QSizeF SvgDom::plotSize(const QSizeF &pageSize_mm) const {
-    return QSizeF(2*pageMargin +  number_width(pageSize_mm)*labelWidth_mm,
+    return QSizeF(2*pageMargin + number_width(pageSize_mm) *labelWidth_mm,
                   2*pageMargin + number_height(pageSize_mm)*labelHeight_mm
            );
 }
@@ -83,18 +92,20 @@ int SvgDom::number_height(const QSizeF &pageSize_mm) const {
 QByteArray SvgDom::onePageToSvg(int page, const QSizeF &pageSize_mm) {
     clear();
 
-    QSizeF size_mm = plotSize(pageSize_mm);
-
     root = createElement("svg");
+
+    /*
+    QSizeF size_mm = plotSize(pageSize_mm);
+    // Must be done for the renderer, otherwise strange scalings.
+    root.setAttribute("width",  QString("%1").arg(size_mm.width()));
+    root.setAttribute("height", QString("%1").arg(size_mm.height()));
     root.setAttribute("viewBox", QString("0 0 %1 %2")
                                      .arg(size_mm.width())
                                      .arg(size_mm.height())
     );
+    */
     root.setAttribute("stroke", "none");
-    root.setAttribute("width",  QString("%1").arg(size_mm.width()));
-    root.setAttribute("height", QString("%1").arg(size_mm.height()));
-
-    root.setAttribute("overflow", "visible");
+    //root.setAttribute("overflow", "visible");
     root.setAttribute("xmlns", "http://www.w3.org/2000/svg");
     appendChild(root);
 
@@ -102,6 +113,7 @@ QByteArray SvgDom::onePageToSvg(int page, const QSizeF &pageSize_mm) {
     int labelsPerWidth = number_width(pageSize_mm);
     int firstElement_page = page*labelsPerWidth*labelsPerHeight;
     int elementNumber = firstElement_page;
+
     for (int v = 0; v < labelsPerHeight; v++) {
         for (int h = 0; h < labelsPerWidth; h++) {
             QPointF pageOffset = QPointF(pageMargin + h * labelWidth_mm, pageMargin + v * labelHeight_mm);
@@ -118,9 +130,27 @@ QByteArray SvgDom::onePageToSvg(int page, const QSizeF &pageSize_mm) {
         }
     }
 finishPage:
+    /*
+    QDomElement pageRect = createPrimitiveRect(QPointF(0, 0), QSizeF(pageSize_mm.width()*0.5, pageSize_mm.height()*0.5), 1.0);
 
+    pageRect.setAttribute("stroke", "black");
+    pageRect.setAttribute("stroke-width", 1.0);
+    pageRect.setAttribute("fill", "#ffffff");
+    root.appendChild(pageRect);
+
+    for (int v = 0; v < labelsPerHeight; v++) {
+        for (int h = 0; h < labelsPerWidth; h++) {
+            QPointF pageOffset = QPointF(pageMargin + h * labelWidth_mm, pageMargin + v * labelHeight_mm);
+            QDomElement transform = createElement("g");
+            transform.setAttribute("transform", QString("translate(%1 %2)").arg(pageOffset.x()).arg(pageOffset.y()));
+            QDomElement text = makeCenteredText(QString("%1 x %2").arg(labelWidth_mm).arg(labelHeight_mm), 10, 10);
+            transform.appendChild(text);
+            root.appendChild(transform);
+        }
+    }
+    */
     if (Settings::shared->addCuttingLine()) {
-        QDomElement grid = makeCuttingGrid(pageSize_mm, "black", 0.02);
+        QDomElement grid = makeCuttingGrid(pageSize_mm, "black", 0.1);
         root.appendChild(grid);
     }
 
@@ -128,6 +158,7 @@ finishPage:
     if (elementNumber >= modelPtr->rowCount()) {
         printingFinished = true;
     }
+    //printf("%s", toString().toStdString().c_str());
     return toString().toUtf8();
 }
 
@@ -168,26 +199,42 @@ QDomElement SvgDom::makeMask(const QString &id, const QPointF &offset, const QSi
 }
 
 
-QDomElement SvgDom::makeRect(const QPointF &offset, const QSizeF &size) {
-    QDomElement rect = createPrimitiveRect(offset, size, lineThickness_mm);
+QDomElement SvgDom::makeOuterRect(const QPointF &offset, const QSizeF &size) {
+    QDomElement outerRect = createPrimitiveRect(offset, size, outerThickness_mm);
     if (Settings::shared->whiteOnBlack()) {
-        rect.setAttribute("fill", "#000000");
+        outerRect.setAttribute("stroke", "black");
     }
     else {
-        rect.setAttribute("fill", "#ffffff");
+        outerRect.setAttribute("stroke", "white");
+
     }
-    rect.setAttribute("stroke", "black");
-    rect.setAttribute("stroke-width", lineThickness_mm);
-    return rect;
+    outerRect.setAttribute("fill", "none");
+    outerRect.setAttribute("stroke-width", outerThickness_mm);
+    return outerRect;
+}
+
+QDomElement SvgDom::makeInnerRect(const QPointF &offset, const QSizeF &size) {
+    QDomElement innerRect = createPrimitiveRect(offset, size, 2*(lineThickness_mm+outerThickness_mm));
+    if (Settings::shared->whiteOnBlack()) {
+        innerRect.setAttribute("stroke", "white");
+        innerRect.setAttribute("fill", "black");
+    }
+    else {
+        innerRect.setAttribute("stroke", "black");
+        innerRect.setAttribute("fill", "none");
+    }
+    innerRect.setAttribute("stroke-width", lineThickness_mm);
+
+    return innerRect;
 }
 
 QDomElement SvgDom::makeCenteredText(const QString &text, int size_px, int yPosition) {
-    if (Settings::shared->preserveCharacterSpacing()) {
-        return makeCenteredTextAsPath(text, size_px, yPosition);
-    }
-    else {
-        return makeCenteredTextAsText(text, size_px, yPosition);
-    }
+        if (Settings::shared->preserveCharacterSpacing()) {
+            return makeCenteredTextAsPath(text, size_px, yPosition);
+        }
+        else {
+            return makeCenteredTextAsText(text, size_px, yPosition);
+        }
 }
 
 QDomElement SvgDom::makeCenteredTextAsText(
@@ -346,7 +393,7 @@ QDomElement SvgDom::makeCuttingGrid(const QSizeF &pageSize_mm, const QString &co
 
     for (int v = 0; v < labelsPerHeight+1; v++) {
         QDomElement line = createElement("line");
-        line.setAttribute("x1", QString("%1").arg(-90));
+        line.setAttribute("x1", QString("%1").arg(-5));
         line.setAttribute("y1", QString("%1").arg(pageMargin+v*labelHeight_mm));
         line.setAttribute("x2", QString("%1").arg(pageSize_mm.width()));
         line.setAttribute("y2", QString("%1").arg(pageMargin+v*labelHeight_mm));
@@ -358,7 +405,7 @@ QDomElement SvgDom::makeCuttingGrid(const QSizeF &pageSize_mm, const QString &co
     for (int h = 0; h < labelsPerWidth+1; h++) {
         QDomElement line = createElement("line");
         line.setAttribute("x1", QString("%1").arg(pageMargin+h*labelWidth_mm));
-        line.setAttribute("y1", QString("%1").arg(-20));
+        line.setAttribute("y1", QString("%1").arg(-labelWidth_mm/2));
         line.setAttribute("x2", QString("%1").arg(pageMargin+h*labelWidth_mm));
         line.setAttribute("y2", QString("%1").arg(pageSize_mm.height()));
         line.setAttribute("stroke", color);
@@ -367,17 +414,6 @@ QDomElement SvgDom::makeCuttingGrid(const QSizeF &pageSize_mm, const QString &co
     }
     return grid;
 }
-
-
-/*
-void SvgDom::addRect() {
-    root.appendChild(makeRect(QPointF(), QSizeF(labelWidth_mm, labelHeight_mm)));
-}
-
-void SvgDom::addText(const QString &text, double size_px, double yPosition) {
-    root.appendChild(makeCenteredTextAsPath(text, size_px, yPosition));
-}
-*/
 
 
 

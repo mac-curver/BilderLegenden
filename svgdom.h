@@ -19,7 +19,9 @@ public:
 
     QDomElement makeClip(const QString &id, const QPointF &offset, const QSizeF &size); // can't be used
     QDomElement makeMask(const QString &id, const QPointF &offset, const QSizeF &size); // can't be used
-    QDomElement makeRect(const QPointF &offset, const QSizeF &size);
+    QDomElement makeOuterRect(const QPointF &offset, const QSizeF &size);
+    QDomElement makeInnerRect(const QPointF &offset, const QSizeF &size);
+
     QDomElement makeCenteredText(const QString &text, int size_px, int yPosition);
     QDomElement makeQrCode(const QrCode &qr);
 
@@ -52,6 +54,7 @@ public:
     double labelWidth_mm =  100.0;
     double labelHeight_mm =  50.0;
     double lineThickness_mm = 1.0;
+    double outerThickness_mm = 5.0;
     QString labelFont = "Arial";
 
 private:

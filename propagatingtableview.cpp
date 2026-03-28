@@ -80,18 +80,19 @@ void PropagatingTableView::updatePreview() {
 
 
 void PropagatingTableView::showPrintPreview(bool showIt) {
-    //QPageLayout layoutWithLandScape;
-    //layoutWithLandScape.setOrientation(QPageLayout::Landscape);
-    //codeWidget->printer->setPageLayout(layoutWithLandScape);
+
 
     if (showIt) {
         //codeWidget->isPrinter = false;
         printPreviewDialog->setVisible(true);
         printPreviewDialog->raise();
         printPreviewDialog->setWindowTitle(tr("Print Legends"));
+        // Reset to normal printer output
+        codeWidget->printer->setOutputFormat(QPrinter::NativeFormat);
+        codeWidget->printer->setOutputFileName("");
+        //printPreviewDialog->open(codeWidget, SLOT(finished(int)));
         switch (printPreviewDialog->exec()) {
         case QDialog::Accepted:
-            //setPageSetup();
             break;
         default:
             return;
@@ -120,6 +121,13 @@ void PropagatingTableView::setLabelSize_mm(const QSizeF &size_mm) {
 void PropagatingTableView::setFrameThickness(double thickness_mm) {
     if (codeWidget) {
         codeWidget->setFrameThickness(thickness_mm);
+    }
+    updatePreview();
+}
+
+void PropagatingTableView::setOuterThickness(double thickness_mm) {
+    if (codeWidget) {
+        codeWidget->setOuterThickness(thickness_mm);
     }
     updatePreview();
 }

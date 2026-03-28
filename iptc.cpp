@@ -1,4 +1,4 @@
-#include <QDebug>
+//#include <QDebug>
 #include "iptc.h"
 
 IPTC::IPTC(const QByteArray &ba) {
@@ -26,8 +26,7 @@ void IPTC::parseIptcFromUChar(const unsigned char *buffer, unsigned int length) 
     long pos = findMarker(0);
 
     uint8_t lastBlockType = 0x00;
-    int count = 0;
-    for (; pos != -1 && count < 256; count++) {
+    for (int count = 0; pos != -1 && count < 256; count++) {
         pos = findMarker(pos + IPTC_ENTRY_MARKER.size());
         if (pos == -1) break;
 
@@ -57,8 +56,6 @@ void IPTC::parseIptcFromUChar(const unsigned char *buffer, unsigned int length) 
         std::string key = IPTC_ENTRY_TYPES.at(blockType);
         std::string value(buffer + dataPos,
                           buffer + dataPos + blockSize);
-
-
 
         map[key] = value;
     }

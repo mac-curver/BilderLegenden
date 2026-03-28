@@ -6,9 +6,7 @@
 #include <QDropEvent>
 #include <QAbstractItemView>
 #include <QSettings>
-//#include "qrcodewidget.h"
 #include "settingsdialog.h"
-//#include "imagelegendsmodel.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -56,6 +54,7 @@ public slots:
     void setLabelSize(double );
     void setLabelFont(const QString &font);
     void setFrameThickness(double thickness_mm);
+    void setOuterThickness(double thickness_mm);
     void recentTriggered(QAction* action);
 
 protected slots:

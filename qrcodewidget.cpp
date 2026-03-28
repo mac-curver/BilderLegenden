@@ -32,13 +32,6 @@ QString QrCodeWidget::generateFileName(const QString &name) {
     return picturesLocation + QLatin1String("/") + name;
 }
 
-/*
-void QrCodeWidget::setLandscapeOrientation(bool isLandscape) {
-    QPageLayout::Orientation orientation = isLandscape ? QPageLayout::Landscape : QPageLayout::Portrait;
-    printer->setPageOrientation(orientation);
-    resizeContent();
-}
-*/
 
 void QrCodeWidget::setImageLegends(ImageLegendsModel *modelPtr) {
     svgDom.setImageLegends(modelPtr);
@@ -59,6 +52,10 @@ void QrCodeWidget::setLabelSize_mm(const QSizeF &size_mm) {
 
 void QrCodeWidget::setFrameThickness(double thickness) {
     svgDom.lineThickness_mm = thickness;
+}
+
+void QrCodeWidget::setOuterThickness(double thickness) {
+    svgDom.outerThickness_mm = thickness;
 }
 
 void QrCodeWidget::setPageNumber(int pageNumber) {
@@ -94,50 +91,19 @@ void QrCodeWidget::resizeContent() {
     update();
 }
 
-void QrCodeWidget::paintEvent(QPaintEvent *event) {
-    Q_ASSERT(false);
-    Q_UNUSED(event)
-    QPainter painter(this);
-    painter.save();
-    QSvgRenderer renderer(svgDom.onePageToSvg(_pageNumber-1, paperSize_mm()));
-    renderer.setAspectRatioMode(Qt::KeepAspectRatio);
-    renderer.render(&painter);
-    painter.restore();
-
-    // blue frame arround
-    QPen pen(Qt::red, 4.0);
-    painter.setPen(pen);
-    painter.drawRect(rect());
-}
-
-
-
-void QrCodeWidget::print(QPrinter *printerPtr) {
-    Q_ASSERT(false);
-    QPainter painter(printerPtr);
-
-    double dpiX  = printerPtr->logicalDpiX();
-    //double dpiY  = printerPtr->logicalDpiY();
-
-    painter.save();
-    double scale = dpiX * printerPtr->pageRect(QPrinter::Inch).width()/width();
-
-    painter.scale(scale, scale);
-    render(&painter);
-
-    painter.restore();
-
-    painter.end();
-}
 
 
 void QrCodeWidget::printPreview(QPrinter *printerPtr) {
+
+    //printerPtr->setPageOrientation(currentOrient);
+    qDebug() << "QrCodeWidget::printPreview:" << printerPtr->pageLayout().orientation();
 
     svgDom.printingFinished = false;
     QPainter painter;
     painter.begin(printerPtr);
     painter.save();
-    painter.scale(1.0, 1.0);
+    // Scale here to obtain 1:1 printing in mm
+    painter.scale(1.03, 1.04);
 
     /*
     qDebug() << (isPrinter ? "Output to printer" : "Just display ");
@@ -176,10 +142,14 @@ void QrCodeWidget::printPreview(QPrinter *printerPtr) {
             if (addNewPage) {
                 printer->newPage();
             }
-            QSvgRenderer renderer(svgDom.onePageToSvg(page-1, paperSize_mm()));
-            renderer.setAspectRatioMode(Qt::KeepAspectRatio);
-            renderer.render(&painter);
-            addNewPage = true;
+            QSvgRenderer renderer;
+            bool success = renderer.load(svgDom.onePageToSvg(page-1, paperSize_mm()));
+            if (success) {
+                renderer.setAspectRatioMode(Qt::IgnoreAspectRatio);
+                renderer.setViewBox(QRectF(QPoint(), paperSize_mm()));
+                renderer.render(&painter);
+                addNewPage = true;
+            }
         }
     }
 

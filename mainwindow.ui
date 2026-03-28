@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>961</width>
+    <width>991</width>
     <height>600</height>
    </rect>
   </property>
@@ -127,15 +127,15 @@
       <item>
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Frame thickness</string>
+         <string>Frame thickness (In/Out)</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QDoubleSpinBox" name="frameDoubleSpinBox">
+       <widget class="QDoubleSpinBox" name="innerFrameDoubleSpinBox">
         <property name="minimumSize">
          <size>
-          <width>95</width>
+          <width>85</width>
           <height>0</height>
          </size>
         </property>
@@ -156,6 +156,41 @@
         </property>
         <property name="value">
          <double>1.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string notr="true">/</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QDoubleSpinBox" name="outerFrameDoubleSpinBox">
+        <property name="minimumSize">
+         <size>
+          <width>85</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+        </property>
+        <property name="suffix">
+         <string> mm</string>
+        </property>
+        <property name="decimals">
+         <number>2</number>
+        </property>
+        <property name="maximum">
+         <double>20.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.250000000000000</double>
+        </property>
+        <property name="value">
+         <double>5.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -334,8 +369,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>961</width>
-     <height>33</height>
+     <width>991</width>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuBilderLegenden">
@@ -550,7 +585,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>frameDoubleSpinBox</sender>
+   <sender>innerFrameDoubleSpinBox</sender>
    <signal>valueChanged(double)</signal>
    <receiver>MainWindow</receiver>
    <slot>setFrameThickness(double)</slot>
@@ -629,6 +664,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>outerFrameDoubleSpinBox</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setOuterThickness(double)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>690</x>
+     <y>51</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>480</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>load()</slot>
@@ -647,5 +698,6 @@
   <slot>printPdf()</slot>
   <slot>exportSvg()</slot>
   <slot>recentTriggered(QAction*)</slot>
+  <slot>setOuterThickness(double)</slot>
  </slots>
 </ui>

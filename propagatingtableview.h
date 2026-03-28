@@ -22,6 +22,7 @@ public:
     void setLabelFont(const QString &font);
     void setLabelSize_mm(const QSizeF &size_mm);
     void setFrameThickness(double thickness_mm);
+    void setOuterThickness(double thickness_mm);
 
     void storePrintSettings();
     void retrievePrintSettings();

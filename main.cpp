@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
         QCoreApplication::installTranslator(&translator);
     }
     QTranslator qtTranslator;
-    qDebug() << QLibraryInfo::path(QLibraryInfo::TranslationsPath);
+    //qDebug() << QLibraryInfo::path(QLibraryInfo::TranslationsPath);
     if (qtTranslator.load(QLocale(), "qtbase", "_", ":/i18n")) {
         qApp->installTranslator(&qtTranslator);
     }

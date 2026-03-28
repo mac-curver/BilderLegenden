@@ -96,7 +96,7 @@ void QrCodeWidget::resizeContent() {
 void QrCodeWidget::printPreview(QPrinter *printerPtr) {
 
     //printerPtr->setPageOrientation(currentOrient);
-    qDebug() << "QrCodeWidget::printPreview:" << printerPtr->pageLayout().orientation();
+    //qDebug() << "QrCodeWidget::printPreview:" << printerPtr->pageLayout().orientation();
 
     svgDom.printingFinished = false;
     QPainter painter;

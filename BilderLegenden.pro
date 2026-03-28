@@ -3,7 +3,7 @@ QT       += core gui widgets svg svgwidgets xml printsupport
 
 CONFIG += c++17
 
-VERSION   = 3.01.06
+VERSION   = 3.02.01
 
 # Avoid file mess, but don't move the rcc dir as otherwise translation fails
 MOC_DIR = ../build/moc

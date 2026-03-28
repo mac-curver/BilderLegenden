@@ -58,15 +58,15 @@ public:
     QString labelFont = "Arial";
 
 private:
-    double border_mm = 7.0;
-    double titleYPosition = 16.0;
-    double titleSize = 9.0;
-    double descriptionYPosition = titleYPosition + 8.0;
-    double infoSize = 3.0;
-    double descriptionSize = 5.0;
-    double authorSize = 6.0;
-    double lineHeightFactor = 1.2;
-    double matrixCodeScale = 0.45;
+    const double border_mm = 3.0;
+    const double titleYPosition = 14.0;
+    const double titleSize = 9.0;
+    const double descriptionYPosition = titleYPosition + 8.0;
+    const double infoSize = 3.0;
+    const double descriptionSize = 5.0;
+    const double authorSize = 6.0;
+    const double lineHeightFactor = 1.2;
+    const double matrixCodeScale = 0.45;
 
 
 private:

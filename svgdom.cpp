@@ -13,13 +13,9 @@ SvgDom::SvgDom() {
 
 void SvgDom::plotSingleLabel(const RowType &row, const QPointF &offset) {
 
-    //QDomElement mask = makeMask("Mask", QPointF(), QSizeF(labelWidth_mm, labelHeight_mm));
-    //root.appendChild(mask);
 
     QDomElement transform = createElement("g");
     transform.setAttribute("transform", QString("translate(%1 %2)").arg(offset.x()).arg(offset.y()));
-    //transform.setAttribute("mask", "url(#Mask)"); // apply clipping
-
 
     QDomElement rectElement = makeOuterRect(QPointF(), QSizeF(labelWidth_mm, labelHeight_mm));
     transform.appendChild(rectElement);
@@ -28,10 +24,10 @@ void SvgDom::plotSingleLabel(const RowType &row, const QPointF &offset) {
     transform.appendChild(innerElement);
 
 
-    QDomElement titleElement = makeCenteredText(row.title, titleSize, titleYPosition);
+    QDomElement titleElement = makeCenteredText(row.title, titleSize, titleYPosition + outerThickness_mm);
     transform.appendChild(titleElement);
 
-    double vertical = descriptionYPosition;
+    double vertical = descriptionYPosition + outerThickness_mm;
     if (Settings::shared->addPhotoInfo()) {
         QDomElement lineElement = makeCenteredText(row.camera, infoSize, vertical-infoSize);
         transform.appendChild(lineElement);
@@ -44,7 +40,8 @@ void SvgDom::plotSingleLabel(const RowType &row, const QPointF &offset) {
             transform.appendChild(lineElement);
         }
     }
-    QDomElement authorElement = makeCenteredText(row.author, authorSize, labelHeight_mm-border_mm);
+    double lowerBorder = border_mm + outerThickness_mm;
+    QDomElement authorElement = makeCenteredText(row.author, authorSize, labelHeight_mm-lowerBorder);
     transform.appendChild(authorElement);
 
     const QrCode qr = QrCode::encodeText(row.url.toStdString().c_str(), QrCode::Ecc::MEDIUM);
@@ -52,16 +49,16 @@ void SvgDom::plotSingleLabel(const RowType &row, const QPointF &offset) {
     if (!row.url.isEmpty()) {
         const QrCode qr = QrCode::encodeText(row.url.toStdString().c_str(), QrCode::Ecc::MEDIUM);
         QDomElement translateTransform = createElement("g");
-        double qrXPosition = labelWidth_mm-matrixCodeScale*qr.getSize()-border_mm;
+        double qrXPosition = labelWidth_mm-matrixCodeScale*qr.getSize()-lowerBorder;
         switch (Settings::shared->labelAlignment()) {
         case Qt::AlignRight:
-            qrXPosition = border_mm;
+            qrXPosition = lowerBorder;
             break;
         default:
             break;
         }
 
-        QPointF translation(qrXPosition, labelHeight_mm-matrixCodeScale*qr.getSize()-border_mm);
+        QPointF translation(qrXPosition, labelHeight_mm-matrixCodeScale*qr.getSize()-lowerBorder);
         translateTransform.setAttribute("transform", QString("translate(%1 %2)").arg(translation.x()).arg(translation.y()));
         QDomElement scaleTransform = createElement("g");
         scaleTransform.setAttribute("transform", QString("scale(%1 %2)").arg(matrixCodeScale).arg(matrixCodeScale));
@@ -116,7 +113,9 @@ QByteArray SvgDom::onePageToSvg(int page, const QSizeF &pageSize_mm) {
 
     for (int v = 0; v < labelsPerHeight; v++) {
         for (int h = 0; h < labelsPerWidth; h++) {
-            QPointF pageOffset = QPointF(pageMargin + h * labelWidth_mm, pageMargin + v * labelHeight_mm);
+            QPointF pageOffset = QPointF(pageMargin + h * labelWidth_mm,
+                                         pageMargin + v * labelHeight_mm
+                    );
             if (elementNumber < modelPtr->rowCount()) {
                 RowType row = modelPtr->getRow(elementNumber);
                 if (!row.title.isEmpty()) {

@@ -228,12 +228,12 @@ QDomElement SvgDom::makeInnerRect(const QPointF &offset, const QSizeF &size) {
 }
 
 QDomElement SvgDom::makeCenteredText(const QString &text, int size_px, int yPosition) {
-        if (Settings::shared->preserveCharacterSpacing()) {
-            return makeCenteredTextAsPath(text, size_px, yPosition);
-        }
-        else {
-            return makeCenteredTextAsText(text, size_px, yPosition);
-        }
+    if (Settings::shared->preserveCharacterSpacing()) {
+        return makeCenteredTextAsPath(text, size_px, yPosition);
+    }
+    else {
+        return makeCenteredTextAsText(text, size_px, yPosition);
+    }
 }
 
 QDomElement SvgDom::makeCenteredTextAsText(

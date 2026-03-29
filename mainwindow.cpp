@@ -72,7 +72,7 @@ bool MainWindow::awake() {
     Settings::shared->beginGroup("Label");
     Settings::shared->setReadOnly();
     ui->fontComboBox->setFontFilters(QFontComboBox::ScalableFonts);
-    QString settingsFontAsString = Settings::shared->value("Font", QFont("Arial")).toString();
+    QString settingsFontAsString = Settings::shared->value("Font", "Arial").toString();
     ui->fontComboBox->setCurrentFont(QFont(settingsFontAsString));
     ui->tableView->setLabelFont(settingsFontAsString);
 
